@@ -1,9 +1,10 @@
 package assignment1;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+
+import java.rmi.Remote;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -11,38 +12,84 @@ import java.util.Hashtable;
 
 public class GameServer implements PlayerInterface, AdminInterface {
 	
+	//------------------------------------------------------------------------
+	// Variables to quickly and manage ports and servers
+	//------------------------------------------------------------------------
+	public final static int NORTH_AMERICA_RMI_PORT = 2020;
+	public final static int EUROPE_RMI_PORT = 2021;
+	public final static int ASIA_RMI_PORT = 2022;
+	
+	public final static int NORTH_AMERICA_UDP_PORT = 2030;
+	public final static int EUROPE_UDP_PORT = 2031;
+	public final static int ASIA_UDP_PORT = 2032;
+	
+	//------------------------------------------------------------------------
+	// Fields to easily set ports and run UDP server  and 
+	// set the server name string when extending this class
+	//------------------------------------------------------------------------
+	private String serverName;
+	private int rmiPort;
+	private int UDPclientServer1Port;
+	private int UDPclientServer2Port;
+	private int UDPserverPort;
+	private UDPserver udpS;
+	private UDPclient udpC1;
+	private UDPclient udpC2;
+	
+	
+	//------------------------------------------------------------------------
+	// hash table and other data
 	private Hashtable<Character, ArrayList<PlayerData>> ht;
-	private int PORT1;
-	private int PORT2;
-	
-	private int NORTH_AMERICA_RMI_PORT = 2020;
-	private int EUROPE_RMI_PORT = 2021;
-	private int ASIA_RMI_PORT = 2022;
-	
-	private int NORTH_AMERICA_UDP_PORT = 2030;
-	private int EUROPE_UDP_PORT = 2031;
-	private int ASIA_UDP_PORT = 2032;
-
+	private int playersOnline;
+	private int playersOffline;
+	private int totalPlayers;
 	//------------------------------------------------------------------------
 	
-	public GameServer() { 
+	// Constructor called by extender
+	public GameServer( String sName, int rmiP, int usp, int uc1, int uc2) { 
+		System.out.println("Creating game server: "+ sName 
+							+ " RMIport: " + rmiP
+							+ " UDPserver: " + usp 
+							+ " UDPclient1: " + uc1 
+							+ " UDPclient2: " + uc2);
+		
+		serverName = sName;
+		rmiPort = rmiP;
+		UDPserverPort = usp;
+		UDPclientServer1Port = uc1;
+		UDPclientServer2Port = uc2;
+		
+		playersOnline = 0;
+		playersOffline = 0;
+		totalPlayers = 0;
+		
+		
 		initHashTable();
-		initRMIserver();
+		initUDPclients();
+		
+		try {
+			initRMIserver();
+			System.out.println("Server is up");
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		initUDPserver();
-		
-		
 	}
 
 	//------------------------------------------------------------------------
-
-
 	@Override
 	public String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
-		if (adminUserName == "admin" && adminPassword == "admin") {
-			return ht.toString();
+		if ( adminUserName.equals("admin") && adminPassword.equals("admin") ) {
+			String s1 = udpC1.getStatus();
+			//String s2 = udpC2.getStatus();
+			String s3 = getPlayerStatusString();
+			//return s3;
+			return s1 + s3;
+			//return s1 + s2 + s3;
 		}
-		
 		
 		return "not allowed";
 	}
@@ -60,6 +107,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 			System.out.println(firstLetter);
 			ht.get(firstLetter).add(p);
 			System.out.println( ht.get(firstLetter) );
+			totalPlayers++;
 			return true;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -86,6 +134,18 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	}
 	
 	//------------------------------------------------------------------------
+
+	public String getPlayerStatusString() {
+		
+		String s = "";
+		s += serverName +": ";
+		s += playersOnline +" online, ";
+		s += playersOffline +" offline. ";
+		
+		return  s;
+	}
+	
+	//------------------------------------------------------------------------
 	
 	void initHashTable (){
 		ht = new Hashtable<Character, ArrayList<PlayerData>> ();
@@ -96,42 +156,25 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
 	private void initUDPserver() {
-		DatagramSocket server1 = null;
-		DatagramSocket server2 = null;
+		udpS = new UDPserver(this, UDPserverPort);
+		new Thread(udpS).start();
 		
-		try {
-			server1 = new DatagramSocket(PORT1);
-			server2 = new DatagramSocket(PORT2);
-			byte[] buffer = new byte[1000];
-			
-			while (true) {
-				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-				server1.receive(request);
-				String s = new String(request.getData());
-				s = s.trim();
-				
-				byte [] b = s.getBytes();
-				
-				DatagramPacket reply = new DatagramPacket(b,  b.length, request.getAddress(), request.getPort());
-				server1.send(reply);
-			}
-			
-		} catch (SocketException e) {
-			System.out.println("Socket: " + e.getMessage());
-		
-		} catch ( IOException e ) {
-			System.out.println("IO: " + e.getMessage());
-		} finally { 
-			if (server1 != null) server1.close();
-		}
 	}
 	
+	//------------------------------------------------------------------------
+
+	private void initUDPclients() {
+		udpC1 = new UDPclient(UDPclientServer1Port);
+		udpC2 = new UDPclient(UDPclientServer2Port);
+		
+	}
 
 	//------------------------------------------------------------------------
 	
-	private void initRMIserver() {
-		// TODO Auto-generated method stub
-		
+	private void initRMIserver() throws Exception {
+		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
+		Registry r = LocateRegistry.createRegistry(rmiPort);
+		r.rebind(serverName, obj);
 	}
 	
 	//------------------------------------------------------------------------
