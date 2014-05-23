@@ -26,26 +26,28 @@ public class UDPserver implements Runnable {
 			while (true) {
 				System.out.println("UDP server is up on port: " + UDPserverPort);
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-				
 				socket.receive(request);
+				
 				String s = gameServer.getPlayerStatusString();
 				byte[] b = s.getBytes();
 				
 				DatagramPacket reply = new DatagramPacket(b, b.length,
 						request.getAddress(), request.getPort());
 				socket.send(reply);
-
 			}
 			
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
+			System.out.println("crash in server");
 
 		} catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
 
 		} finally {
-			if (socket != null)
+			if (socket != null) {
+				System.out.println("socket closed in server");
 				socket.close();
+			}
 		}
 
 	}

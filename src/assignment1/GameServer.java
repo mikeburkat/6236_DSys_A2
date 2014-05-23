@@ -84,11 +84,10 @@ public class GameServer implements PlayerInterface, AdminInterface {
 			String ipAddress) {
 		if ( adminUserName.equals("admin") && adminPassword.equals("admin") ) {
 			String s1 = udpC1.getStatus();
-			//String s2 = udpC2.getStatus();
+			String s2 = udpC2.getStatus();
 			String s3 = getPlayerStatusString();
-			//return s3;
-			return s1 + s3;
-			//return s1 + s2 + s3;
+			
+			return s1 + " " + s2 + " " + s3;
 		}
 		
 		return "not allowed";
@@ -140,7 +139,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		String s = "";
 		s += serverName +": ";
 		s += playersOnline +" online, ";
-		s += playersOffline +" offline. ";
+		s += (totalPlayers - playersOnline) +" offline. ";
 		
 		return  s;
 	}
