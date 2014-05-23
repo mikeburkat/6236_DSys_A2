@@ -43,15 +43,16 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	private int playersOnline;
 	private int playersOffline;
 	private int totalPlayers;
+	private ServerLog log;
 	//------------------------------------------------------------------------
 	
 	// Constructor called by extender
 	public GameServer( String sName, int rmiP, int usp, int uc1, int uc2) { 
 		System.out.println("Creating game server: "+ sName 
-							+ " RMIport: " + rmiP
-							+ " UDPserver: " + usp 
-							+ " UDPclient1: " + uc1 
-							+ " UDPclient2: " + uc2);
+							+ ", RMIport: " + rmiP
+							+ ", UDPserver: " + usp 
+							+ ", UDPclient1: " + uc1 
+							+ ", UDPclient2: " + uc2);
 		
 		serverName = sName;
 		rmiPort = rmiP;
@@ -63,14 +64,13 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		playersOffline = 0;
 		totalPlayers = 0;
 		
+		log = new ServerLog(serverName);
 		
 		initHashTable();
 		initUDPclients();
 		
 		try {
 			initRMIserver();
-			System.out.println("Server is up");
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -87,8 +87,11 @@ public class GameServer implements PlayerInterface, AdminInterface {
 			String s2 = udpC2.getStatus();
 			String s3 = getPlayerStatusString();
 			
-			return s1 + " " + s2 + " " + s3;
+			String s = s1 + " " + s2 + " " + s3;
+			log.add(s);
+			return s;
 		}
+		
 		
 		return "not allowed";
 	}
@@ -174,6 +177,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
 		Registry r = LocateRegistry.createRegistry(rmiPort);
 		r.rebind(serverName, obj);
+		System.out.println("RMI Server is up in: " + serverName);
 	}
 	
 	//------------------------------------------------------------------------
