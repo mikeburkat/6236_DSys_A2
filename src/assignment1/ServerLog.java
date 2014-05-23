@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class ServerLog {
 
@@ -19,27 +21,45 @@ public class ServerLog {
 	}
 
 
-	public void add(String s) {
+	public void addToServerLog(String s) {
 		
-		openFile();
-		try {
-			bw.write(s);
-			bw.close();
-		} catch (IOException e) {
-			System.out.println("Failed to write to server log for " + serverName);
-			e.printStackTrace();
-		}
+		openFile("server");
+		write(s);
+	}
+	
+	public void addToPlayerLog(String userName, String s) {
+		
+		openFile(userName);
+		write(s);
+		
 	}
 	
 	
-	private void openFile() {
+	private void openFile(String fileName) {
 		try {
-			fw = new FileWriter("" + serverName + "/" + serverName + "server.log", true);
+			fw = new FileWriter("" + serverName + "/" + serverName + fileName + ".log", true);
 		} catch (IOException e) {
 			System.out.println("Failed to create server log for " + serverName);
 			e.printStackTrace();
 		}
 		bw = new BufferedWriter(fw);
+	}
+	
+	private void write(String s) {
+		String out = "";
+		
+		out += new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
+		
+		out += " " + s;
+		
+		
+		try {
+			bw.write(s);
+			bw.close();
+		} catch (IOException e) {
+			System.out.println("Failed to write to player log.");
+			e.printStackTrace();
+		}
 	}
 
 
@@ -60,8 +80,7 @@ public class ServerLog {
 	
 	private void resetServerLogs() {
 		
-		
-		System.out.println("may or may not need to reset logs for " + serverName);
+		System.out.println("may or may not need to reset logs manually for " + serverName);
 		
 	}
 	

@@ -82,18 +82,23 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	@Override
 	public String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
+		
+		log.addToServerLog("Admin: " + adminUserName + " requested player status.");
+		
 		if ( adminUserName.equals("admin") && adminPassword.equals("admin") ) {
 			String s1 = udpC1.getStatus();
 			String s2 = udpC2.getStatus();
 			String s3 = getPlayerStatusString();
 			
 			String s = s1 + " " + s2 + " " + s3;
-			log.add(s);
+			
+			log.addToServerLog("Admin: " + adminUserName + " got status back: " + s);
 			return s;
 		}
 		
+		log.addToServerLog("Admin: " + adminUserName + " user name or password.");
 		
-		return "not allowed";
+		return "Not allowed, wrong user name or password.";
 	}
 
 	//------------------------------------------------------------------------
