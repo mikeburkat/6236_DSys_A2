@@ -32,6 +32,7 @@ public class ServerLog {
 		openFile(userName);
 		write(s);
 		
+		addToServerLog(s);
 	}
 	
 	
@@ -47,14 +48,11 @@ public class ServerLog {
 	
 	private void write(String s) {
 		String out = "";
-		
 		out += new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
-		
 		out += " " + s;
 		
-		
 		try {
-			bw.write(s);
+			bw.write(out + "\n");
 			bw.close();
 		} catch (IOException e) {
 			System.out.println("Failed to write to player log.");

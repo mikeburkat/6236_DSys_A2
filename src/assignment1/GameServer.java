@@ -27,8 +27,8 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	// Fields to easily set ports and run UDP server  and 
 	// set the server name string when extending this class
 	//------------------------------------------------------------------------
-	private String serverName;
-	private int rmiPort;
+	protected String serverName;
+	protected int rmiPort;
 	private int UDPclientServer1Port;
 	private int UDPclientServer2Port;
 	private int UDPserverPort;
@@ -70,7 +70,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		initUDPclients();
 		
 		try {
-			initRMIserver();
+			//initRMIserver();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -106,7 +106,8 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	@Override
 	public boolean createPlayerAccount(String firstName, String lastName,
 			int age, String userName, String password, String ipAddress) {
-		// TODO Auto-generated method stub
+		
+		log.addToPlayerLog(userName, "Player: " + userName + " created.");
 		
 		try {
 			PlayerData p = new PlayerData(firstName, lastName, age, userName, password);
@@ -128,7 +129,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	@Override
 	public boolean playerSignIn(String userName, String password,
 			String ipAddress) {
-		// TODO Auto-generated method stub
+		log.addToPlayerLog(userName, "Player: " + userName + " signed in.");
 		return false;
 	}
 
@@ -136,7 +137,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	@Override
 	public boolean playerSignOut(String userName, String ipAddress) {
-		// TODO Auto-generated method stub
+		log.addToPlayerLog(userName, "Player: " + userName + " signed out.");
 		return false;
 	}
 	
@@ -178,12 +179,12 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	
-	private void initRMIserver() throws Exception {
-		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
-		Registry r = LocateRegistry.createRegistry(rmiPort);
-		r.rebind(serverName, obj);
-		System.out.println("RMI Server is up in: " + serverName);
-	}
+//	private void initRMIserver() throws Exception {
+//		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
+//		Registry r = LocateRegistry.createRegistry(rmiPort);
+//		r.rebind(serverName, obj);
+//		System.out.println("RMI Server is up in: " + serverName + " on port: " + rmiPort);
+//	}
 	
 	//------------------------------------------------------------------------
 	
