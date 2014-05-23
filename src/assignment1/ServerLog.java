@@ -14,10 +14,11 @@ public class ServerLog {
 
 	public ServerLog(String sN) {
 		serverName = sN;
+		resetServerLogs(); 
 		initServerLog();
 	}
-	
-	
+
+
 	public void add(String s) {
 		
 		openFile();
@@ -42,7 +43,7 @@ public class ServerLog {
 	}
 
 
-	public void initServerLog() {
+	private void initServerLog() {
 
 		File serverFolder = new File("" + serverName);
 		if (!serverFolder.exists()) {
@@ -55,6 +56,13 @@ public class ServerLog {
 						+ serverFolder.getAbsolutePath());
 			}
 		}
+	}
+	
+	private void resetServerLogs() {
+		
+		
+		System.out.println("may or may not need to reset logs for " + serverName);
+		
 	}
 	
 
