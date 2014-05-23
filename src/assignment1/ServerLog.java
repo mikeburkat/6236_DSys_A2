@@ -33,7 +33,7 @@ public class ServerLog {
 	
 	private void openFile() {
 		try {
-			fw = new FileWriter("" + serverName + "/" + serverName + "server.log");
+			fw = new FileWriter("" + serverName + "/" + serverName + "server.log", true);
 		} catch (IOException e) {
 			System.out.println("Failed to create server log for " + serverName);
 			e.printStackTrace();
