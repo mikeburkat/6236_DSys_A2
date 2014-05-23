@@ -5,10 +5,10 @@ public class PlayerData {
 	private String userName;
 	private String firstName;
 	private String lastName;
-	private String age;
+	private int age;
 	private String password;
 	
-	public PlayerData (String fN, String lN, String a, String uN, String p) throws Exception {
+	public PlayerData (String fN, String lN, int a, String uN, String p) throws Exception {
 		setUserName(uN);
 		firstName = fN;
 		lastName = lN;
@@ -17,7 +17,11 @@ public class PlayerData {
 	}
 	
 	public void setUserName (String uN) throws Exception {
-		throw new Exception("User name too short.");
+		if (uN.length() >= 6 && uN.length() <= 15) {
+			userName = uN;
+		} else {
+			throw new Exception("User name too short.");
+		}
 	}
 	
 	public String toString () {

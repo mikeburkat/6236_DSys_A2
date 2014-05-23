@@ -3,11 +3,14 @@ package assignment1;
 public class ClientApp {
 
 	public static void main( String args[]) {
-		AdminInterface admin = (AdminInterface) new GameServer();
-		PlayerInterface player = (PlayerInterface) new GameServer();
 		
-		System.out.println( admin.getPlayerStatus("1", "2", "3") );
-		System.out.println( player.playerSignIn("", "", "") );
+		AdminInterface adminNA = (AdminInterface) new GameServer();
+		PlayerInterface playerNA = (PlayerInterface) adminNA;
+		
+		System.out.println( playerNA.createPlayerAccount("mike", "burkat", 26, "mikebk", "mmm", "192.xxx") );
+		System.out.println( adminNA.getPlayerStatus("admin", "admin", "3") );
+		
+		
 		
 	}
 }
