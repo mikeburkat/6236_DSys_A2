@@ -13,22 +13,20 @@ import java.util.Hashtable;
 public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
-	// Variables to quickly and manage ports and servers
+	// Variables to quickly manage ports for servers
 	//------------------------------------------------------------------------
-	public final static int NORTH_AMERICA_RMI_PORT = 2020;
-	public final static int EUROPE_RMI_PORT = 2021;
-	public final static int ASIA_RMI_PORT = 2022;
+	public final static int RMI_PORT = 2020;
 	
 	public final static int NORTH_AMERICA_UDP_PORT = 2030;
 	public final static int EUROPE_UDP_PORT = 2031;
 	public final static int ASIA_UDP_PORT = 2032;
 	
 	//------------------------------------------------------------------------
-	// Fields to easily set ports and run UDP server  and 
+	// Fields to easily set ports and run UDP server and 
 	// set the server name string when extending this class
 	//------------------------------------------------------------------------
-	protected String serverName;
-	protected int rmiPort;
+	private String serverName;
+	private int rmiPort;
 	private int UDPclientServer1Port;
 	private int UDPclientServer2Port;
 	private int UDPserverPort;
@@ -70,8 +68,9 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		initUDPclients();
 		
 		try {
-			//initRMIserver();
+			initRMIserver();
 		} catch(Exception e) {
+			System.out.println(e);
 			e.printStackTrace();
 		}
 		
@@ -130,6 +129,10 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	public boolean playerSignIn(String userName, String password,
 			String ipAddress) {
 		log.addToPlayerLog(userName, "Player: " + userName + " signed in.");
+		
+		playersOffline--;
+		playersOnline++;
+		
 		return false;
 	}
 
@@ -138,6 +141,10 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	@Override
 	public boolean playerSignOut(String userName, String ipAddress) {
 		log.addToPlayerLog(userName, "Player: " + userName + " signed out.");
+		
+		playersOffline++;
+		playersOnline--;
+		
 		return false;
 	}
 	
@@ -174,17 +181,18 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	private void initUDPclients() {
 		udpC1 = new UDPclient(UDPclientServer1Port);
 		udpC2 = new UDPclient(UDPclientServer2Port);
-		
 	}
 
 	//------------------------------------------------------------------------
 	
-//	private void initRMIserver() throws Exception {
-//		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
-//		Registry r = LocateRegistry.createRegistry(rmiPort);
-//		r.rebind(serverName, obj);
-//		System.out.println("RMI Server is up in: " + serverName + " on port: " + rmiPort);
-//	}
+	private void initRMIserver() throws Exception {
+		System.out.println("RMI: " + serverName);
+		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
+		Registry r = LocateRegistry.getRegistry("localhost", RMI_PORT);
+		
+		r.rebind(serverName, obj);
+		System.out.println("RMI Server is up in: " + serverName + " on port: " + rmiPort);
+	}
 	
 	//------------------------------------------------------------------------
 	

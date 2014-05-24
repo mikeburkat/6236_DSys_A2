@@ -2,71 +2,132 @@ package assignment1;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+//----------------------------------------------------------------------------
 
 public class ClientApp {
-	
 
-	public static void main(String args[]) {
+	private final int RMI_PORT = 2020;
 
-		NorthAmericaServer nas = new NorthAmericaServer();
-		EuropeServer eus = new EuropeServer();
-		AsiaServer ass = new AsiaServer();
-		
-		AdminInterface adminNA = null;
-		PlayerInterface playerNA = null;
-		
-		AdminInterface adminEU = null;
-		PlayerInterface playerEU = null;
-		
-		AdminInterface adminAS = null;
-		PlayerInterface playerAS = null;
-		
+	private AdminInterface adminNA = null;
+	private PlayerInterface playerNA = null;
+	private AdminInterface adminEU = null;
+	private PlayerInterface playerEU = null;
+	private AdminInterface adminAS = null;
+	private PlayerInterface playerAS = null;
+
+	// ------------------------------------------------------------------------
+
+	public ClientApp() {
+		initLinksToServers();
+	}
+
+	// ------------------------------------------------------------------------
+
+	public String createPlayerAccount(String firstName, String lastName,
+			int age, String userName, String password, String ipAddress) {
+
+		AdminInterface server = findServer(ipAddress);
 		try {
-			adminNA = (AdminInterface) Naming.lookup("rmi://localhost:" 
-					+ GameServer.NORTH_AMERICA_RMI_PORT + "/NA");
-			playerNA = (PlayerInterface) adminNA;
-			System.out.println(adminNA);
-			adminEU = (AdminInterface) Naming.lookup("rmi://localhost:" 
-					+ GameServer.EUROPE_RMI_PORT + "/EU");
-			playerEU = (PlayerInterface) adminNA;
-			System.out.println(adminEU);
-			
-			adminAS = (AdminInterface) Naming.lookup("rmi://localhost:" 
-					+ GameServer.ASIA_RMI_PORT + "/AS");
-			playerAS = (PlayerInterface) adminNA;
-			System.out.println(adminAS);
-			
-			
+			server.createPlayerAccount(firstName, lastName, age, userName, password, ipAddress);
+		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	// ------------------------------------------------------------------------
+
+	public String playerSignIn(String userName, String password,
+			String ipAddress) {
+		
+		AdminInterface server = findServer(ipAddress);
+		try {
+			server.playerSignIn(userName, password, ipAddress);
+		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	// ------------------------------------------------------------------------
+
+	public String playerSignOut(String userName, String ipAddress) {
+
+		AdminInterface server = findServer(ipAddress);
+		try {
+			server.playerSignOut(userName, ipAddress);
+		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	// ------------------------------------------------------------------------
+
+	private AdminInterface findServer(String ipAddress) {
+		AdminInterface server = null;
+
+		String s = ipAddress.substring(0, 3);
+
+		System.out.println(s);
+		try {
+			switch (s) {
+			case "132":
+				adminNA = (AdminInterface) Naming.lookup("//localhost:2020/NA");
+				System.out.println(s);
+				break;
+			case "93.":
+				System.out.println(s);
+				break;
+			case "182":
+				System.out.println(s);
+				break;
+			};
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 
+		return server;
+	}
+
+	// ------------------------------------------------------------------------
+
+	private void initLinksToServers() {
 		try {
-			System.out.println(playerNA.createPlayerAccount("mike", "burkat", 26,
-					"mikebk", "mmm", "192.xxx"));
-			System.out.println(playerNA);
-			
-			System.out.println( adminNA.getPlayerStatus("admin", "admin", "3") );
-			
-			System.out.println(playerEU);
-			System.out.println(playerEU.createPlayerAccount("mikebbb", "burkat", 26,
-					"mikebk", "mmm", "192.xxx"));
-			
-			System.out.println(playerAS.createPlayerAccount("ebbb", "burkat", 26,
-					"mikebk", "mmm", "192.xxx"));
-			
-			System.out.println( adminNA.getPlayerStatus("admin", "admin", "3") );
-			
-			System.out.println(playerNA.createPlayerAccount("mic", "burkat", 26,
-					"mikebk", "mmm", "192.xxx"));
-			
-			System.out.println( adminNA.getPlayerStatus("admin", "admin", "3") );
-			
-		} catch (RemoteException e) {
+			adminNA = (AdminInterface) Naming.lookup("//localhost:2020/NA");
+			playerNA = (PlayerInterface) adminNA;
+			System.out.println(adminNA);
+
+			adminEU = (AdminInterface) Naming.lookup("//localhost:2020/EU");
+			playerEU = (PlayerInterface) adminEU;
+			System.out.println(adminEU);
+
+			adminAS = (AdminInterface) Naming.lookup("//localhost:2020/AS");
+			playerAS = (PlayerInterface) adminAS;
+			System.out.println(adminAS);
+
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+	}
 
+	// ------------------------------------------------------------------------
+
+	public static void main(String args[]) {
+
+		
+		
+		
 	}
 }
