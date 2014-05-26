@@ -81,47 +81,51 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	@Override
 	public String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
+
 		
-		log.addToServerLog("Admin: " + adminUserName + " requested player status.");
-		
-		if ( adminUserName.equals("admin") && adminPassword.equals("admin") ) {
+		if ( adminUserName.equals("Admin") && adminPassword.equals("Admin") ) {
+			
+			log.addToAdminLog(adminUserName, "requested player status.");
+			
 			String s1 = udpC1.getStatus();
 			String s2 = udpC2.getStatus();
 			String s3 = getPlayerStatusString();
-			
 			String s = s1 + " " + s2 + " " + s3;
 			
-			System.out.println(s);
-			log.addToServerLog("Admin: " + adminUserName + " got status back: " + s);
+//			System.out.println(s);
+			log.addToAdminLog(adminUserName, "got status back: " + s);
 			return s;
+		} else {
+			log.addToServerLog("Admin: " + adminUserName + " requested player status, but user name or password was wrong.");
+			return "Not allowed, wrong user name or password.";
 		}
-		
-		log.addToServerLog("Admin: " + adminUserName + " user name or password.");
-		
-		return "Not allowed, wrong user name or password.";
 	}
 
 	//------------------------------------------------------------------------
 	
 	@Override
-	public boolean createPlayerAccount(String firstName, String lastName,
+	public String createPlayerAccount(String firstName, String lastName,
 			int age, String userName, String password, String ipAddress) {
 		
-		log.addToPlayerLog(userName, "Player: " + userName + " created.");
+		PlayerData pd = getPlayer(userName);
+		if (pd != null) {
+			String s = "Player: " + userName + " already exists, try a different User Name.";
+			log.addToServerLog(s);
+			return s;
+		}
 		
 		try {
 			PlayerData p = new PlayerData(firstName, lastName, age, userName, password);
 			char firstLetter = userName.charAt(0);
-			System.out.println(firstLetter);
 			ht.get(firstLetter).add(p);
-			System.out.println( ht.get(firstLetter) );
 			totalPlayers++;
-			return true;
+			log.addToPlayerLog(userName, "created.");
+			return "Created";
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			String s = "Player: " + userName + " creation failed: " + e.getMessage();
+			log.addToServerLog(s);
+			return s;
 		}
-		
-		return false;
 	}
 
 	//------------------------------------------------------------------------
@@ -132,19 +136,19 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		
 		PlayerData pd = getPlayer(userName);
 		if (pd == null) {
+			log.addToServerLog("Sign In Failed, player "+userName+" not found");
 			return "Sign In Failed, player not found";
 		}
 		
 		String s = pd.signIn(password);
 		
-		System.out.println(s);
-		
 		if ( s.equals("Success") ) {
 			playersOffline--;
 			playersOnline++;
-			log.addToPlayerLog(userName, "Player: " + userName + " signed in.");
-			return "Sign In Succesful";
+			log.addToPlayerLog(userName, "signed in.");
+			return "Signed In";
 		} else {
+			log.addToPlayerLog(userName, s);
 			return s;
 		}
 	}
@@ -154,13 +158,9 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	private PlayerData getPlayer(String userName) {
 		
 		char firstLetter = userName.charAt(0);
-		System.out.println(firstLetter);
 		ArrayList<PlayerData> pd = ht.get(firstLetter);
-		System.out.println(pd);
 		for (PlayerData p : pd) {
-			System.out.println(p);
 			if (userName.equals( p.getUserName() )) {
-				System.out.println("player found");
 				return p;
 			}
 		}
@@ -174,6 +174,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		
 		PlayerData pd = getPlayer(userName);
 		if (pd == null) {
+			log.addToServerLog("Sign Out Failed, player "+userName+" not found");
 			return "Sign In Failed, player not found";
 		}
 		
@@ -182,14 +183,12 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		if ( s.equals("Success") ) {
 			playersOffline++;
 			playersOnline--;
-			log.addToPlayerLog(userName, "Player: " + userName + " signed out.");
-			return "Sign Out Succesful";
+			log.addToPlayerLog(userName, "signed out.");
+			return "Signed Out";
 		} else {
+			log.addToPlayerLog(userName, "Sign Out Failed, user not currently signed in");
 			return "Sign Out Failed, user not currently signed in";
 		}
-		
-		
-		
 	}
 	
 	//------------------------------------------------------------------------

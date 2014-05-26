@@ -25,13 +25,22 @@ public class ServerLog {
 		
 		openFile("server");
 		write(s);
+		System.out.println(s);
 	}
 	
 	public void addToPlayerLog(String userName, String s) {
+		s = "Player: " + userName + " " + s;
 		
 		openFile(userName);
 		write(s);
+		addToServerLog(s);
+	}
+	
+	public void addToAdminLog(String userName, String s) {
+		s = "Admin: " + userName + " " + s;
 		
+		openFile(userName);
+		write(s);
 		addToServerLog(s);
 	}
 	

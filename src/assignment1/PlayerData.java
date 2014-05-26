@@ -11,10 +11,10 @@ public class PlayerData {
 	
 	public PlayerData (String fN, String lN, int a, String uN, String p) throws Exception {
 		setUserName(uN);
+		setPassword(p);
 		firstName = fN;
 		lastName = lN;
 		age = a;
-		password = p;
 		online = false;
 	}
 	
@@ -22,7 +22,15 @@ public class PlayerData {
 		if (uN.length() >= 6 && uN.length() <= 15) {
 			userName = uN;
 		} else {
-			throw new Exception("User name too short.");
+			throw new Exception("User name too short or too long, must be 6 or more and 15 or less characters.");
+		}
+	}
+	
+	public void setPassword (String pass) throws Exception {
+		if (pass.length() >= 6) {
+			password = pass;
+		} else {
+			throw new Exception("Password too short, must be at least 6 characters.");
 		}
 	}
 	

@@ -22,9 +22,9 @@ public class UDPserver implements Runnable {
 
 			byte[] buffer = new byte[1000];
 			socket = new DatagramSocket(UDPserverPort);
+			System.out.println("UDP server is up on port: " + UDPserverPort);
 			
 			while (true) {
-				System.out.println("UDP server is up on port: " + UDPserverPort);
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 				socket.receive(request);
 				
@@ -39,13 +39,11 @@ public class UDPserver implements Runnable {
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
 			System.out.println("crash in server");
-
 		} catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
-
 		} finally {
 			if (socket != null) {
-				System.out.println("socket closed in server");
+//				System.out.println("socket closed in server");
 				socket.close();
 			}
 		}
