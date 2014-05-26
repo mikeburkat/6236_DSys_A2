@@ -23,19 +23,21 @@ public class UDPserver implements Runnable {
 			byte[] buffer = new byte[1000];
 			socket = new DatagramSocket(UDPserverPort);
 			System.out.println("UDP server is up on port: " + UDPserverPort);
-			
+
 			while (true) {
-				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+				DatagramPacket request = new DatagramPacket(buffer,
+						buffer.length);
 				socket.receive(request);
-				
+
 				String s = gameServer.getPlayerStatusString();
 				byte[] b = s.getBytes();
-				
+
 				DatagramPacket reply = new DatagramPacket(b, b.length,
 						request.getAddress(), request.getPort());
 				socket.send(reply);
+
 			}
-			
+
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
 			System.out.println("crash in server");
@@ -43,7 +45,7 @@ public class UDPserver implements Runnable {
 			System.out.println("IO: " + e.getMessage());
 		} finally {
 			if (socket != null) {
-//				System.out.println("socket closed in server");
+				// System.out.println("socket closed in server");
 				socket.close();
 			}
 		}

@@ -12,10 +12,20 @@ public class UnitTestClientApp {
 	
 	@Test
 	public void test_create_player_accountNA_deny_double_creation() {
-		PlayerClient p = new PlayerClient("mikewcd", "burkat", 26, "mikeNA", "mmmmmm", "132.0.0.0");
+		PlayerClient p = new PlayerClient("mikewcd", "burkat", 26, "mikeNAtwo", "mmmmmm", "132.0.0.0");
 		assertTrue(p.createPlayerAccount());
-		PlayerClient p2 = new PlayerClient("mikewcd", "burkat", 26, "mikeNA", "mmmmmm", "132.0.0.0");
+	
+		PlayerClient p2 = new PlayerClient("mikewcd", "burkat", 26, "mikeNAtwo", "mmmmmm", "132.0.0.0");
 		assertFalse(p2.createPlayerAccount());
+	}
+	
+	@Test
+	public void test_create_player_accountNA_deny_double_creation_second_form() {
+		PlayerClient p = new PlayerClient();
+		assertTrue(p.createPlayerAccount("mikewcd", "burkat", 26, "mikeNA", "mmmmmm", "132.0.0.0"));
+		
+		PlayerClient p2 = new PlayerClient();
+		assertFalse(p2.createPlayerAccount("mikewcd", "burkat", 26, "mikeNA", "mmmmmm", "132.0.0.0"));
 	}
 	
 	@Test
@@ -36,6 +46,14 @@ public class UnitTestClientApp {
 		assertTrue(p.createPlayerAccount());
 		assertTrue(p.playerSignIn());
 		assertTrue(p.playerSignOut());
+	}
+	
+	@Test
+	public void test_signIn_and_signOut_second_form(){
+		PlayerClient p = new PlayerClient();
+		assertTrue(p.createPlayerAccount("mike", "burkat", 26, "anotherAStwo", "mmmmmm", "182.0.0.0"));
+		assertTrue(p.playerSignIn("anotherAStwo", "mmmmmm", "182.0.0.0"));
+		assertTrue(p.playerSignOut("anotherAStwo", "182.0.0.0"));
 	}
 	
 	@Test
@@ -101,6 +119,25 @@ public class UnitTestClientApp {
 		a.getPlayerStatus();
 	}
 	
+	
+	@Test
+	public void test_multiThread() {
+		AdministratorClient a1 = new AdministratorClient("Admin", "Admin", "182.0.0.0");
+		AdministratorClient a2 = new AdministratorClient("Admin", "Admin", "93.0.0.0");
+		AdministratorClient a3 = new AdministratorClient("Admin", "Admin", "132.0.0.0");
+		
+		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "multiThrAS", "123456", "182.0.0.0");
+		PlayerClient p2 = new PlayerClient("mike", "burkat", 26, "multiThrEU", "123456", "93.0.0.0");
+		PlayerClient p3 = new PlayerClient("mike", "burkat", 26, "multiThrNA", "123456", "132.0.0.0");
+		
+		new Thread (p1).start();
+		new Thread (a1).start();
+		new Thread (p2).start();
+		new Thread (a2).start();
+		new Thread (p3).start();
+		new Thread (a3).start();
+
+	}
 	
 	
 

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 //----------------------------------------------------------------------------
 
-public class PlayerClient {
+public class PlayerClient implements Runnable {
 
 	private final int RMI_PORT = 2020;
 	private String firstName;
@@ -35,7 +35,7 @@ public class PlayerClient {
 
 	// ------------------------------------------------------------------------
 
-	public boolean createPlayerAccount(String fName, String lName,
+	synchronized public boolean createPlayerAccount(String fName, String lName,
 			int a, String userN, String pass, String ip) {
 		
 		firstName = fName;
@@ -49,25 +49,24 @@ public class PlayerClient {
 	
 	// ------------------------------------------------------------------------
 	
-	public boolean createPlayerAccount() {
+	synchronized public boolean createPlayerAccount() {
 		PlayerInterface server = findServer(ipAddress);
 		System.out.println(userName +" "+ password +" "+ ipAddress + " ");
 		try {
 			String out = server.createPlayerAccount(firstName, lastName, age, userName, password, ipAddress);
-			System.out.println(out);
+			System.out.println(out +"\n");
 			boolean result = out.equals("Created") ? true : false;
 			return result;
 		} catch (RemoteException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage() +"\n");
 			return false;
 		}
 	}
 
 	// ------------------------------------------------------------------------
 
-	public boolean playerSignIn(String uName, String pass, String ip) {
+	synchronized public boolean playerSignIn(String uName, String pass, String ip) {
 		userName = uName;
 		password = pass;
 		ipAddress = ip;
@@ -76,17 +75,17 @@ public class PlayerClient {
 	
 	// ------------------------------------------------------------------------
 	
-	public boolean playerSignIn() {
+	synchronized public boolean playerSignIn() {
 		String out = "";
 		PlayerInterface server = findServer(ipAddress);
 		System.out.println(userName +" "+ password +" "+ ipAddress + " ");
 		try {
 			out = server.playerSignIn(userName, password, ipAddress);
-			System.out.println(out);
+			System.out.println(out +"\n");
 			boolean result = out.equals("Signed In") ? true : false;
 			return result;
 		} catch (RemoteException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage() +"\n");
 			e.printStackTrace();
 			return false;
 		}
@@ -94,7 +93,7 @@ public class PlayerClient {
 
 	// ------------------------------------------------------------------------
 
-	public boolean playerSignOut(String uName, String ip) {
+	synchronized public boolean playerSignOut(String uName, String ip) {
 		userName = uName;
 		ipAddress = ip;
 		return playerSignOut();
@@ -102,16 +101,16 @@ public class PlayerClient {
 	
 	// ------------------------------------------------------------------------
 	
-	public boolean playerSignOut() {
+	synchronized public boolean playerSignOut() {
 		PlayerInterface server = findServer(ipAddress);
 		System.out.println(userName + " " + ipAddress + " ");
 		try {
 			String out = server.playerSignOut(userName, ipAddress);
-			System.out.println(out);
+			System.out.println(out +"\n");
 			boolean result = out.equals("Signed Out") ? true : false;
 			return result;
 		} catch (RemoteException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage() +"\n");
 			e.printStackTrace();
 			return false;
 		}
@@ -119,7 +118,7 @@ public class PlayerClient {
 	
 	// ------------------------------------------------------------------------
 
-	private PlayerInterface findServer(String ip) {
+	synchronized private PlayerInterface findServer(String ip) {
 		PlayerInterface server = null;
 		String s = null;
 
@@ -130,7 +129,6 @@ public class PlayerClient {
 		}
 		
 		s = ip.substring(0, 3);
-
 		try {
 			switch (s) {
 			case "132":
@@ -150,8 +148,20 @@ public class PlayerClient {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-
 		return server;
+	}
+	
+	// ------------------------------------------------------------------------
+
+	@Override
+	public void run() {
+		createPlayerAccount();
+		
+		for (int i = 0; i < 5; i++) {
+			playerSignIn();
+			playerSignOut();
+		}
+		
 	}
 	
 	// ------------------------------------------------------------------------

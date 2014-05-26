@@ -79,7 +79,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	@Override
-	synchronized public String getPlayerStatus(String adminUserName, String adminPassword,
+	public String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
 		
 		if ( adminUserName.equals("Admin") && adminPassword.equals("Admin") ) {
@@ -103,7 +103,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	synchronized public String createPlayerAccount(String firstName, String lastName,
+	public String createPlayerAccount(String firstName, String lastName,
 			int age, String userName, String password, String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
@@ -130,7 +130,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	synchronized public String playerSignIn(String userName, String password,
+	public String playerSignIn(String userName, String password,
 			String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
@@ -154,7 +154,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	
-	synchronized private PlayerData getPlayer(String userName) {
+	private PlayerData getPlayer(String userName) {
 		
 		char firstLetter = userName.charAt(0);
 		ArrayList<PlayerData> pd = ht.get(firstLetter);
@@ -169,7 +169,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 
 	@Override
-	synchronized public String playerSignOut(String userName, String ipAddress) {
+	public String playerSignOut(String userName, String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
 		if (pd == null) {
@@ -192,7 +192,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
 
-	synchronized public String getPlayerStatusString() {
+	public String getPlayerStatusString() {
 		
 		String s = "";
 		s += serverName +": ";
@@ -204,7 +204,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
 	
-	synchronized void initHashTable (){
+	void initHashTable (){
 		ht = new Hashtable<Character, ArrayList<PlayerData>> ();
 		for (int i = 0; i < 26; i++) {
 			ht.put((char) ('a'+i), new ArrayList<PlayerData> ());
@@ -212,7 +212,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	}
 	
 	//------------------------------------------------------------------------
-	private void initUDPserver() {
+	void initUDPserver() {
 		udpS = new UDPserver(this, UDPserverPort);
 		new Thread(udpS).start();
 		
@@ -220,14 +220,14 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
 
-	private void initUDPclients() {
+	void initUDPclients() {
 		udpC1 = new UDPclient(UDPclientServer1Port);
 		udpC2 = new UDPclient(UDPclientServer2Port);
 	}
 
 	//------------------------------------------------------------------------
 	
-	private void initRMIserver() throws Exception {
+	void initRMIserver() throws Exception {
 		System.out.println("RMI: " + serverName);
 		Remote obj = UnicastRemoteObject.exportObject(this, rmiPort);
 		Registry r = LocateRegistry.getRegistry("localhost", RMI_PORT);

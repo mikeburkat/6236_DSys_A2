@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 
 //----------------------------------------------------------------------------
 
-public class AdministratorClient{
+public class AdministratorClient implements Runnable {
 
 	private final int RMI_PORT = 2020;
 	private String adminUserName;
@@ -27,7 +27,7 @@ public class AdministratorClient{
 	
 	// ------------------------------------------------------------------------
 	
-	public String getPlayerStatus(String aUserN, String aPass, String ip) {
+	synchronized public String getPlayerStatus(String aUserN, String aPass, String ip) {
 		adminUserName = aUserN;
 		adminPassword = aPass;
 		ipAddress = ip;
@@ -36,15 +36,15 @@ public class AdministratorClient{
 	
 	// ------------------------------------------------------------------------
 	
-	public String getPlayerStatus() {
+	synchronized public String getPlayerStatus() {
 		AdminInterface server = findServer(ipAddress);
 		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " ");
 		try {
 			String s = server.getPlayerStatus(adminUserName, adminPassword, ipAddress);
-			System.out.println(s);
+			System.out.println(s +"\n");
 			return s;
 		} catch (RemoteException e) {
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage() +"\n");
 			e.printStackTrace();
 		}
 		return null;
@@ -52,7 +52,7 @@ public class AdministratorClient{
 
 	// ------------------------------------------------------------------------
 
-	private AdminInterface findServer(String ipAddress) {
+	synchronized private AdminInterface findServer(String ipAddress) {
 		AdminInterface server = null;
 
 		String s = ipAddress.substring(0, 3);
@@ -75,6 +75,15 @@ public class AdministratorClient{
 		}
 
 		return server;
+	}
+	
+	// ------------------------------------------------------------------------
+
+	@Override
+	public void run() {
+		for (int i = 0; i < 5; i++) {
+			getPlayerStatus();
+		}
 	}
 	
 	// ------------------------------------------------------------------------
