@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+//------------------------------------------------------------------------
+
 public class ServerLog {
 
 	String serverName;
 	FileWriter fw;
 	BufferedWriter bw;
 	
+	//------------------------------------------------------------------------
 
 	public ServerLog(String sN) {
 		serverName = sN;
@@ -20,6 +23,7 @@ public class ServerLog {
 		initServerLog();
 	}
 
+	//------------------------------------------------------------------------
 
 	public void addToServerLog(String s) {
 		
@@ -27,6 +31,8 @@ public class ServerLog {
 		write(s);
 		System.out.println(s);
 	}
+	
+	//------------------------------------------------------------------------
 	
 	public void addToPlayerLog(String userName, String s) {
 		s = "Player: " + userName + " " + s;
@@ -36,6 +42,8 @@ public class ServerLog {
 		addToServerLog(s);
 	}
 	
+	//------------------------------------------------------------------------
+	
 	public void addToAdminLog(String userName, String s) {
 		s = "Admin: " + userName + " " + s;
 		
@@ -44,6 +52,7 @@ public class ServerLog {
 		addToServerLog(s);
 	}
 	
+	//------------------------------------------------------------------------
 	
 	private void openFile(String fileName) {
 		try {
@@ -54,6 +63,8 @@ public class ServerLog {
 		}
 		bw = new BufferedWriter(fw);
 	}
+	
+	//------------------------------------------------------------------------
 	
 	private void write(String s) {
 		String out = "";
@@ -68,7 +79,8 @@ public class ServerLog {
 			e.printStackTrace();
 		}
 	}
-
+	
+	//------------------------------------------------------------------------
 
 	private void initServerLog() {
 
@@ -85,11 +97,13 @@ public class ServerLog {
 		}
 	}
 	
+	//------------------------------------------------------------------------
+	
 	private void resetServerLogs() {
 		
-		System.out.println("may or may not need to reset logs manually for " + serverName);
+		System.out.println("You may want to reset logs manually for " + serverName);
 		
 	}
 	
-
+	//------------------------------------------------------------------------
 }

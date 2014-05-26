@@ -51,13 +51,16 @@ public class PlayerClient {
 	
 	public boolean createPlayerAccount() {
 		PlayerInterface server = findServer(ipAddress);
+		System.out.println(userName +" "+ password +" "+ ipAddress + " ");
 		try {
 			String out = server.createPlayerAccount(firstName, lastName, age, userName, password, ipAddress);
+			System.out.println(out);
 			boolean result = out.equals("Created") ? true : false;
 			return result;
 		} catch (RemoteException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+			System.out.println(e.getMessage());
 			return false;
 		}
 	}
@@ -76,7 +79,7 @@ public class PlayerClient {
 	public boolean playerSignIn() {
 		String out = "";
 		PlayerInterface server = findServer(ipAddress);
-		System.out.print(userName +" "+ password +" "+ ipAddress + " ");
+		System.out.println(userName +" "+ password +" "+ ipAddress + " ");
 		try {
 			out = server.playerSignIn(userName, password, ipAddress);
 			System.out.println(out);
@@ -101,7 +104,7 @@ public class PlayerClient {
 	
 	public boolean playerSignOut() {
 		PlayerInterface server = findServer(ipAddress);
-		System.out.print(userName + " " + ipAddress + " ");
+		System.out.println(userName + " " + ipAddress + " ");
 		try {
 			String out = server.playerSignOut(userName, ipAddress);
 			System.out.println(out);

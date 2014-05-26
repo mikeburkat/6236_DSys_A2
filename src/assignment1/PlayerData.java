@@ -1,5 +1,7 @@
 package assignment1;
 
+//------------------------------------------------------------------------
+
 public class PlayerData {
 
 	private String userName;
@@ -8,6 +10,8 @@ public class PlayerData {
 	private int age;
 	private String password;
 	private boolean online;
+	
+	//------------------------------------------------------------------------
 	
 	public PlayerData (String fN, String lN, int a, String uN, String p) throws Exception {
 		setUserName(uN);
@@ -18,6 +22,8 @@ public class PlayerData {
 		online = false;
 	}
 	
+	//------------------------------------------------------------------------
+	
 	public void setUserName (String uN) throws Exception {
 		if (uN.length() >= 6 && uN.length() <= 15) {
 			userName = uN;
@@ -25,6 +31,8 @@ public class PlayerData {
 			throw new Exception("User name too short or too long, must be 6 or more and 15 or less characters.");
 		}
 	}
+	
+	//------------------------------------------------------------------------
 	
 	public void setPassword (String pass) throws Exception {
 		if (pass.length() >= 6) {
@@ -34,6 +42,7 @@ public class PlayerData {
 		}
 	}
 	
+	//------------------------------------------------------------------------
 	
 	public String signIn(String pass) {
 		if (online) {
@@ -46,6 +55,8 @@ public class PlayerData {
 		}
 	}
 	
+	//------------------------------------------------------------------------
+	
 	public String signOut() {
 		if (!online) {
 			return "Sign out failed, user already signed out";
@@ -55,12 +66,11 @@ public class PlayerData {
 		}
 	}
 	
-	public String toString () {
-		return userName;
-	}
+	//------------------------------------------------------------------------
 
 	public String getUserName() {
 		return userName;
 	}
 	
+	//------------------------------------------------------------------------
 }

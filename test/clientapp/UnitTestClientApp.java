@@ -1,20 +1,14 @@
 package clientapp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import assignment1.AdministratorClient;
 import assignment1.PlayerClient;
-import assignment1.RunServers;
 
 public class UnitTestClientApp {
-	
-	@Test
-	public void test() {
-//		client.getPlayerStatus("admin", "admin", "132.xxx.xxx.xxx");
-	}
 	
 	@Test
 	public void test_create_player_accountNA_deny_double_creation() {
@@ -45,7 +39,7 @@ public class UnitTestClientApp {
 	}
 	
 	@Test
-	public void test_SignIn_deny_double_signIn(){
+	public void test_signIn_deny_double_signIn(){
 		PlayerClient p = new PlayerClient("mike", "burkat", 26, "anotheroneEU", "mmmmmm", "93.0.0.0");
 		assertTrue(p.createPlayerAccount());
 		assertTrue(p.playerSignIn());
@@ -60,7 +54,7 @@ public class UnitTestClientApp {
 	}
 	
 	@Test
-	public void test_deny_short_or_long_userName(){
+	public void test_create_player_deny_short_or_long_userName(){
 		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "a2345", "mmmmmm", "132.0.0.0");
 		assertFalse(p1.createPlayerAccount());
 		
@@ -69,7 +63,7 @@ public class UnitTestClientApp {
 	}
 	
 	@Test
-	public void test_accept_6_char_or_15_char_userName(){
+	public void test_create_player_accept_6_char_or_15_char_userName(){
 		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "a23456", "mmmmmm", "132.0.0.0");
 		assertTrue(p1.createPlayerAccount());
 		
@@ -78,13 +72,13 @@ public class UnitTestClientApp {
 	}
 	
 	@Test
-	public void test_deny_short_password(){
+	public void test_create_player_deny_short_password(){
 		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "short", "12345", "132.0.0.0");
 		assertFalse(p1.createPlayerAccount());
 	}
 	
 	@Test
-	public void test_accept_6_char_password(){
+	public void test_create_player_accept_6_char_password(){
 		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "goodUname", "123456", "132.0.0.0");
 		assertTrue(p1.createPlayerAccount());
 	}
@@ -92,10 +86,20 @@ public class UnitTestClientApp {
 	@Test
 	public void test_get_status_NA(){
 		AdministratorClient a = new AdministratorClient("Admin", "Admin", "132.0.0.0");
-		
-		assertEquals("", a.getPlayerStatus());
+		a.getPlayerStatus();
 	}
 	
+	@Test
+	public void test_get_status_EU(){
+		AdministratorClient a = new AdministratorClient("Admin", "Admin", "93.0.0.0");
+		a.getPlayerStatus();
+	}
+	
+	@Test
+	public void test_get_status_AS(){
+		AdministratorClient a = new AdministratorClient("Admin", "Admin", "182.0.0.0");
+		a.getPlayerStatus();
+	}
 	
 	
 	

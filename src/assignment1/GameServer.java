@@ -79,20 +79,19 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	@Override
-	public String getPlayerStatus(String adminUserName, String adminPassword,
+	synchronized public String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
-
 		
 		if ( adminUserName.equals("Admin") && adminPassword.equals("Admin") ) {
 			
 			log.addToAdminLog(adminUserName, "requested player status.");
 			
-			String s1 = udpC1.getStatus();
-			String s2 = udpC2.getStatus();
-			String s3 = getPlayerStatusString();
-			String s = s1 + " " + s2 + " " + s3;
+			String myStatus = getPlayerStatusString();
+			String s2 = udpC1.getStatus();
+			String s3 = udpC2.getStatus();
+
+			String s = myStatus + ", " + s2 + ", " + s3 + ".";
 			
-//			System.out.println(s);
 			log.addToAdminLog(adminUserName, "got status back: " + s);
 			return s;
 		} else {
@@ -104,7 +103,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	public String createPlayerAccount(String firstName, String lastName,
+	synchronized public String createPlayerAccount(String firstName, String lastName,
 			int age, String userName, String password, String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
@@ -131,7 +130,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	public String playerSignIn(String userName, String password,
+	synchronized public String playerSignIn(String userName, String password,
 			String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
@@ -155,7 +154,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	
-	private PlayerData getPlayer(String userName) {
+	synchronized private PlayerData getPlayer(String userName) {
 		
 		char firstLetter = userName.charAt(0);
 		ArrayList<PlayerData> pd = ht.get(firstLetter);
@@ -170,7 +169,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 
 	@Override
-	public String playerSignOut(String userName, String ipAddress) {
+	synchronized public String playerSignOut(String userName, String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
 		if (pd == null) {
@@ -193,19 +192,19 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
 
-	public String getPlayerStatusString() {
+	synchronized public String getPlayerStatusString() {
 		
 		String s = "";
 		s += serverName +": ";
 		s += playersOnline +" online, ";
-		s += (totalPlayers - playersOnline) +" offline. ";
+		s += (totalPlayers - playersOnline) +" offline";
 		
 		return  s;
 	}
 	
 	//------------------------------------------------------------------------
 	
-	void initHashTable (){
+	synchronized void initHashTable (){
 		ht = new Hashtable<Character, ArrayList<PlayerData>> ();
 		for (int i = 0; i < 26; i++) {
 			ht.put((char) ('a'+i), new ArrayList<PlayerData> ());
@@ -238,6 +237,4 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	}
 	
 	//------------------------------------------------------------------------
-	
-	
 }

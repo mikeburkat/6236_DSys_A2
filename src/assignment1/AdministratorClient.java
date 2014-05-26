@@ -38,8 +38,10 @@ public class AdministratorClient{
 	
 	public String getPlayerStatus() {
 		AdminInterface server = findServer(ipAddress);
+		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " ");
 		try {
 			String s = server.getPlayerStatus(adminUserName, adminPassword, ipAddress);
+			System.out.println(s);
 			return s;
 		} catch (RemoteException e) {
 			System.out.println(e.getMessage());
@@ -55,20 +57,16 @@ public class AdministratorClient{
 
 		String s = ipAddress.substring(0, 3);
 
-		System.out.println(s);
 		try {
 			switch (s) {
 			case "132":
 				server = (AdminInterface) Naming.lookup("//localhost:"+RMI_PORT+"/NA");
-				System.out.println(s);
 				break;
 			case "93.":
 				server = (AdminInterface) Naming.lookup("//localhost:"+RMI_PORT+"/EU");
-				System.out.println(s);
 				break;
 			case "182":
 				server = (AdminInterface) Naming.lookup("//localhost:"+RMI_PORT+"/AS");
-				System.out.println(s);
 				break;
 			};
 		} catch (Exception e) {
