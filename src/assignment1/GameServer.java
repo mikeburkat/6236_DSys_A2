@@ -91,6 +91,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 			
 			String s = s1 + " " + s2 + " " + s3;
 			
+			System.out.println(s);
 			log.addToServerLog("Admin: " + adminUserName + " got status back: " + s);
 			return s;
 		}
@@ -126,26 +127,69 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	public boolean playerSignIn(String userName, String password,
+	public String playerSignIn(String userName, String password,
 			String ipAddress) {
-		log.addToPlayerLog(userName, "Player: " + userName + " signed in.");
 		
-		playersOffline--;
-		playersOnline++;
+		PlayerData pd = getPlayer(userName);
+		if (pd == null) {
+			return "Sign In Failed, player not found";
+		}
 		
-		return false;
+		String s = pd.signIn(password);
+		
+		System.out.println(s);
+		
+		if ( s.equals("Success") ) {
+			playersOffline--;
+			playersOnline++;
+			log.addToPlayerLog(userName, "Player: " + userName + " signed in.");
+			return "Sign In Succesful";
+		} else {
+			return s;
+		}
 	}
 
 	//------------------------------------------------------------------------
 	
+	private PlayerData getPlayer(String userName) {
+		
+		char firstLetter = userName.charAt(0);
+		System.out.println(firstLetter);
+		ArrayList<PlayerData> pd = ht.get(firstLetter);
+		System.out.println(pd);
+		for (PlayerData p : pd) {
+			System.out.println(p);
+			if (userName.equals( p.getUserName() )) {
+				System.out.println("player found");
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------------------
+
 	@Override
-	public boolean playerSignOut(String userName, String ipAddress) {
-		log.addToPlayerLog(userName, "Player: " + userName + " signed out.");
+	public String playerSignOut(String userName, String ipAddress) {
 		
-		playersOffline++;
-		playersOnline--;
+		PlayerData pd = getPlayer(userName);
+		if (pd == null) {
+			return "Sign In Failed, player not found";
+		}
 		
-		return false;
+		String s = pd.signOut();
+		
+		if ( s.equals("Success") ) {
+			playersOffline++;
+			playersOnline--;
+			log.addToPlayerLog(userName, "Player: " + userName + " signed out.");
+			return "Sign Out Succesful";
+		} else {
+			return "Sign Out Failed, user not currently signed in";
+		}
+		
+		
+		
 	}
 	
 	//------------------------------------------------------------------------

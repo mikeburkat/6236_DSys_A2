@@ -6,5 +6,4 @@ public interface AdminInterface extends PlayerInterface {
 	
 	public String getPlayerStatus (String adminUserName, String adminPassword, String ipAddress) throws RemoteException;
 
-
 }

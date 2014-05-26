@@ -11,17 +11,9 @@ public class ClientApp {
 
 	private final int RMI_PORT = 2020;
 
-	private AdminInterface adminNA = null;
-	private PlayerInterface playerNA = null;
-	private AdminInterface adminEU = null;
-	private PlayerInterface playerEU = null;
-	private AdminInterface adminAS = null;
-	private PlayerInterface playerAS = null;
-
 	// ------------------------------------------------------------------------
 
 	public ClientApp() {
-		initLinksToServers();
 	}
 
 	// ------------------------------------------------------------------------
@@ -42,16 +34,19 @@ public class ClientApp {
 
 	// ------------------------------------------------------------------------
 
-	public String playerSignIn(String userName, String password,
-			String ipAddress) {
-		
+	public String playerSignIn(String userName, String password, String ipAddress) {
+		String out = "";
 		AdminInterface server = findServer(ipAddress);
+		System.out.println(userName +" "+ password +" "+ ipAddress);
 		try {
-			server.playerSignIn(userName, password, ipAddress);
+			System.out.println(userName +" "+ password +" "+ ipAddress);
+			out = server.playerSignIn(userName, password, ipAddress);
 		} catch (RemoteException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+		
+		System.out.println(out);
 		
 		return null;
 	}
@@ -70,6 +65,19 @@ public class ClientApp {
 		
 		return null;
 	}
+	
+	// ------------------------------------------------------------------------
+	
+	public String getPlayerStatus(String adminUserName, String adminPassword, String ipAddress) {
+		AdminInterface server = findServer(ipAddress);
+		try {
+			server.getPlayerStatus(adminUserName, adminPassword, ipAddress);
+		} catch (RemoteException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	// ------------------------------------------------------------------------
 
@@ -82,13 +90,15 @@ public class ClientApp {
 		try {
 			switch (s) {
 			case "132":
-				adminNA = (AdminInterface) Naming.lookup("//localhost:2020/NA");
+				server = (AdminInterface) Naming.lookup("//localhost:2020/NA");
 				System.out.println(s);
 				break;
 			case "93.":
+				server = (AdminInterface) Naming.lookup("//localhost:2020/EU");
 				System.out.println(s);
 				break;
 			case "182":
+				server = (AdminInterface) Naming.lookup("//localhost:2020/AS");
 				System.out.println(s);
 				break;
 			};
@@ -99,29 +109,7 @@ public class ClientApp {
 
 		return server;
 	}
-
-	// ------------------------------------------------------------------------
-
-	private void initLinksToServers() {
-		try {
-			adminNA = (AdminInterface) Naming.lookup("//localhost:2020/NA");
-			playerNA = (PlayerInterface) adminNA;
-			System.out.println(adminNA);
-
-			adminEU = (AdminInterface) Naming.lookup("//localhost:2020/EU");
-			playerEU = (PlayerInterface) adminEU;
-			System.out.println(adminEU);
-
-			adminAS = (AdminInterface) Naming.lookup("//localhost:2020/AS");
-			playerAS = (PlayerInterface) adminAS;
-			System.out.println(adminAS);
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-	}
-
+	
 	// ------------------------------------------------------------------------
 
 	public static void main(String args[]) {
