@@ -27,7 +27,7 @@ public class AdministratorClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 	
-	synchronized public String getPlayerStatus(String aUserN, String aPass, String ip) {
+	public String getPlayerStatus(String aUserN, String aPass, String ip) {
 		adminUserName = aUserN;
 		adminPassword = aPass;
 		ipAddress = ip;
@@ -36,7 +36,7 @@ public class AdministratorClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 	
-	synchronized public String getPlayerStatus() {
+	public String getPlayerStatus() {
 		AdminInterface server = findServer(ipAddress);
 		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " ");
 		try {
@@ -52,7 +52,7 @@ public class AdministratorClient implements Runnable {
 
 	// ------------------------------------------------------------------------
 
-	synchronized private AdminInterface findServer(String ipAddress) {
+	private AdminInterface findServer(String ipAddress) {
 		AdminInterface server = null;
 
 		String s = ipAddress.substring(0, 3);

@@ -129,6 +129,7 @@ public class UnitTestClientApp {
 		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "multiThrAS", "123456", "182.0.0.0");
 		PlayerClient p2 = new PlayerClient("mike", "burkat", 26, "multiThrEU", "123456", "93.0.0.0");
 		PlayerClient p3 = new PlayerClient("mike", "burkat", 26, "multiThrNA", "123456", "132.0.0.0");
+		PlayerClient p4 = new PlayerClient("mike", "burkat", 26, "multiThrNA2", "123456", "132.0.0.0");
 		
 		new Thread (p1).start();
 		new Thread (a1).start();
@@ -136,6 +137,7 @@ public class UnitTestClientApp {
 		new Thread (a2).start();
 		new Thread (p3).start();
 		new Thread (a3).start();
+		new Thread (p4).start();
 
 	}
 	

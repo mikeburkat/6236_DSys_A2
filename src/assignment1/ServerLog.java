@@ -12,8 +12,6 @@ import java.util.Calendar;
 public class ServerLog {
 
 	String serverName;
-	FileWriter fw;
-	BufferedWriter bw;
 	
 	//------------------------------------------------------------------------
 
@@ -27,8 +25,8 @@ public class ServerLog {
 
 	public void addToServerLog(String s) {
 		
-		openFile("server");
-		write(s);
+		BufferedWriter bw = openFile("server");
+		write(s, bw);
 		System.out.println(s);
 	}
 	
@@ -37,8 +35,8 @@ public class ServerLog {
 	public void addToPlayerLog(String userName, String s) {
 		s = "Player: " + userName + " " + s;
 		
-		openFile(userName);
-		write(s);
+		BufferedWriter bw = openFile(userName);
+		write(s, bw);
 		addToServerLog(s);
 	}
 	
@@ -47,26 +45,28 @@ public class ServerLog {
 	public void addToAdminLog(String userName, String s) {
 		s = "Admin: " + userName + " " + s;
 		
-		openFile(userName);
-		write(s);
+		BufferedWriter bw = openFile(userName);
+		write(s, bw);
 		addToServerLog(s);
 	}
 	
 	//------------------------------------------------------------------------
 	
-	private void openFile(String fileName) {
+	private BufferedWriter openFile(String fileName) {
+		FileWriter fw = null;
 		try {
 			fw = new FileWriter("" + serverName + "/" + serverName + fileName + ".log", true);
 		} catch (IOException e) {
 			System.out.println("Failed to create server log for " + serverName);
 			e.printStackTrace();
 		}
-		bw = new BufferedWriter(fw);
+		BufferedWriter bw = new BufferedWriter(fw);
+		return bw;
 	}
 	
 	//------------------------------------------------------------------------
 	
-	private void write(String s) {
+	private void write(String s, BufferedWriter bw) {
 		String out = "";
 		out += new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
 		out += " " + s;

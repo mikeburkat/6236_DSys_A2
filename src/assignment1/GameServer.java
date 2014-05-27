@@ -79,7 +79,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	@Override
-	public String getPlayerStatus(String adminUserName, String adminPassword,
+	public synchronized String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
 		
 		if ( adminUserName.equals("Admin") && adminPassword.equals("Admin") ) {
@@ -103,7 +103,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	public String createPlayerAccount(String firstName, String lastName,
+	public synchronized String createPlayerAccount(String firstName, String lastName,
 			int age, String userName, String password, String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
@@ -130,7 +130,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 	
 	@Override
-	public String playerSignIn(String userName, String password,
+	public synchronized String playerSignIn(String userName, String password,
 			String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
@@ -154,7 +154,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 
 	//------------------------------------------------------------------------
 	
-	private PlayerData getPlayer(String userName) {
+	private synchronized PlayerData getPlayer(String userName) {
 		
 		char firstLetter = userName.charAt(0);
 		ArrayList<PlayerData> pd = ht.get(firstLetter);
@@ -169,7 +169,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	//------------------------------------------------------------------------
 
 	@Override
-	public String playerSignOut(String userName, String ipAddress) {
+	public synchronized String playerSignOut(String userName, String ipAddress) {
 		
 		PlayerData pd = getPlayer(userName);
 		if (pd == null) {

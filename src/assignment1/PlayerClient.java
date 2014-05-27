@@ -35,7 +35,7 @@ public class PlayerClient implements Runnable {
 
 	// ------------------------------------------------------------------------
 
-	synchronized public boolean createPlayerAccount(String fName, String lName,
+	public boolean createPlayerAccount(String fName, String lName,
 			int a, String userN, String pass, String ip) {
 		
 		firstName = fName;
@@ -49,7 +49,7 @@ public class PlayerClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 	
-	synchronized public boolean createPlayerAccount() {
+	public boolean createPlayerAccount() {
 		PlayerInterface server = findServer(ipAddress);
 		System.out.println(userName +" "+ password +" "+ ipAddress + " ");
 		try {
@@ -66,7 +66,7 @@ public class PlayerClient implements Runnable {
 
 	// ------------------------------------------------------------------------
 
-	synchronized public boolean playerSignIn(String uName, String pass, String ip) {
+	public boolean playerSignIn(String uName, String pass, String ip) {
 		userName = uName;
 		password = pass;
 		ipAddress = ip;
@@ -75,7 +75,7 @@ public class PlayerClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 	
-	synchronized public boolean playerSignIn() {
+	public boolean playerSignIn() {
 		String out = "";
 		PlayerInterface server = findServer(ipAddress);
 		System.out.println(userName +" "+ password +" "+ ipAddress + " ");
@@ -93,7 +93,7 @@ public class PlayerClient implements Runnable {
 
 	// ------------------------------------------------------------------------
 
-	synchronized public boolean playerSignOut(String uName, String ip) {
+	public boolean playerSignOut(String uName, String ip) {
 		userName = uName;
 		ipAddress = ip;
 		return playerSignOut();
@@ -101,7 +101,7 @@ public class PlayerClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 	
-	synchronized public boolean playerSignOut() {
+	public boolean playerSignOut() {
 		PlayerInterface server = findServer(ipAddress);
 		System.out.println(userName + " " + ipAddress + " ");
 		try {
@@ -118,7 +118,7 @@ public class PlayerClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 
-	synchronized private PlayerInterface findServer(String ip) {
+	private PlayerInterface findServer(String ip) {
 		PlayerInterface server = null;
 		String s = null;
 
@@ -157,7 +157,7 @@ public class PlayerClient implements Runnable {
 	public void run() {
 		createPlayerAccount();
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			playerSignIn();
 			playerSignOut();
 		}
