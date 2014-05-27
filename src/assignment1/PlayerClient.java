@@ -5,7 +5,13 @@ import java.rmi.RemoteException;
 import java.util.regex.Pattern;
 
 //----------------------------------------------------------------------------
-
+/**
+* This is the player client. This represents one player.
+* A player can create its self on the server, sign in and sign out,
+* by calling the appropriate methods.
+* 
+* @author Mike
+*/
 public class PlayerClient implements Runnable {
 
 	private final int RMI_PORT = 2020;
@@ -152,7 +158,9 @@ public class PlayerClient implements Runnable {
 	}
 	
 	// ------------------------------------------------------------------------
-
+	/**
+	 * This is only used for testing concurrency. It is called from the UnitTestClients
+	 */
 	@Override
 	public void run() {
 		createPlayerAccount();

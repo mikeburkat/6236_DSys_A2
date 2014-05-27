@@ -1,6 +1,12 @@
 package assignment1;
 
-
+/**
+ * This is the initialization of the NorthAmerica server. It's name is set to "NA"
+ * and it uses the protected fields that are in the GameServer class to set
+ * its RMI port, its UDP port, and both client ports. 
+ * 
+ * @author Mike
+ */
 public class NorthAmericaServer extends GameServer {
 
 	private final static String SERVER_NAME1 = "NA";

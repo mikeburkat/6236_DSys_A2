@@ -1,7 +1,13 @@
 package assignment1;
 
 //------------------------------------------------------------------------
-
+/**
+ * This class is a data model for the player. It validates lengh of the user name
+ * and password. It also contains the online or offline status of the player, and 
+ * it validates sign in and sign out actions.
+ * 
+ * @author Mike
+ */
 public class PlayerData {
 
 	private String userName;

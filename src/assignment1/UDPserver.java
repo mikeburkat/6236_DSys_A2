@@ -5,6 +5,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/**
+ * This class accepts requests for status, and it sends the status of
+ * its GameServer back to the requesting client.
+ * 
+ * @author Mike
+ */
 public class UDPserver implements Runnable {
 
 	DatagramSocket socket;
@@ -45,7 +51,6 @@ public class UDPserver implements Runnable {
 			System.out.println("IO: " + e.getMessage());
 		} finally {
 			if (socket != null) {
-				// System.out.println("socket closed in server");
 				socket.close();
 			}
 		}

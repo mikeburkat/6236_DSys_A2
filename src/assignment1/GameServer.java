@@ -10,16 +10,22 @@ import java.util.Hashtable;
 
 	//------------------------------------------------------------------------
 
+/**
+ * This is the GameServer class. It implements both the player and administrator
+ * interfaces. Ports may be quickly changed using the fields.
+ * 
+ * @author Mike
+ */
 public class GameServer implements PlayerInterface, AdminInterface {
 	
 	//------------------------------------------------------------------------
 	// Variables to quickly manage ports for servers
 	//------------------------------------------------------------------------
-	public final static int RMI_PORT = 2020;
+	protected final static int RMI_PORT = 2020;
 	
-	public final static int NORTH_AMERICA_UDP_PORT = 2030;
-	public final static int EUROPE_UDP_PORT = 2031;
-	public final static int ASIA_UDP_PORT = 2032;
+	protected final static int NORTH_AMERICA_UDP_PORT = 2030;
+	protected final static int EUROPE_UDP_PORT = 2031;
+	protected final static int ASIA_UDP_PORT = 2032;
 	
 	//------------------------------------------------------------------------
 	// Fields to easily set ports and run UDP server and 
@@ -44,7 +50,16 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	private ServerLog log;
 	//------------------------------------------------------------------------
 	
-	// Constructor called by extender
+	/**
+	 * This constructor gets called by the parent class which extends the GameServer.
+	 * It sets all the important variables that distinguish each server.
+	 * 
+	 * @param sName Server Name
+	 * @param rmiP RMI port
+	 * @param usp UDP server port
+	 * @param uc1 UDP client port 1
+	 * @param uc2 UDP client port 2
+	 */
 	public GameServer( String sName, int rmiP, int usp, int uc1, int uc2) { 
 		System.out.println("Creating game server: "+ sName 
 							+ ", RMIport: " + rmiP
@@ -78,6 +93,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	}
 
 	//------------------------------------------------------------------------
+	
 	@Override
 	public synchronized String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {

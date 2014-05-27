@@ -4,7 +4,12 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 //----------------------------------------------------------------------------
-
+/**
+ * This is the administrator client. This represents one administrator.
+ * An administrator can get the player status.
+ * 
+ * @author Mike
+ */
 public class AdministratorClient implements Runnable {
 
 	private final int RMI_PORT = 2020;
@@ -79,6 +84,9 @@ public class AdministratorClient implements Runnable {
 	
 	// ------------------------------------------------------------------------
 
+	/**
+	 * This is only used for testing concurrency. It is called from the UnitTestClients
+	 */
 	@Override
 	public void run() {
 		for (int i = 0; i < 5; i++) {

@@ -5,6 +5,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/**
+ * This class sends a request for a status to be returned from a 
+ * UDP server. The target port is set in the constructor.
+ * It returns the status of the target server.
+ * 
+ * @author Mike
+ */
 public class UDPclient {
 
 	DatagramSocket socket;
@@ -38,7 +45,6 @@ public class UDPclient {
 			e.printStackTrace();
 		} finally { 
 			if (socket != null) {
-//				System.out.println("socket closed in client: "+ udpPort);
 				socket.close();
 			}
 		}

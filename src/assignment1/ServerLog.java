@@ -8,7 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 //------------------------------------------------------------------------
-
+/**
+ * This class serves as the logger of the server and player.
+ * It can save to both the player logs and server logs by calling the
+ * appropriate methods.
+ * 
+ * @author Mike
+ */
 public class ServerLog {
 
 	String serverName;
