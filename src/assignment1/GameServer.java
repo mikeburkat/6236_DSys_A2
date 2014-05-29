@@ -131,7 +131,8 @@ public class GameServer implements PlayerInterface, AdminInterface {
 		
 		try {
 			PlayerData p = new PlayerData(firstName, lastName, age, userName, password);
-			char firstLetter = userName.charAt(0);
+			String upperF = userName.substring(0, 1).toUpperCase();
+			char firstLetter = upperF.charAt(0);
 			ht.get(firstLetter).add(p);
 			totalPlayers++;
 			log.addToPlayerLog(userName, "created.");
@@ -172,7 +173,8 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	
 	private synchronized PlayerData getPlayer(String userName) {
 		
-		char firstLetter = userName.charAt(0);
+		String upperF = userName.substring(0, 1).toUpperCase();
+		char firstLetter = upperF.charAt(0);
 		ArrayList<PlayerData> pd = ht.get(firstLetter);
 		for (PlayerData p : pd) {
 			if (userName.equals( p.getUserName() )) {
@@ -223,7 +225,7 @@ public class GameServer implements PlayerInterface, AdminInterface {
 	void initHashTable (){
 		ht = new Hashtable<Character, ArrayList<PlayerData>> ();
 		for (int i = 0; i < 26; i++) {
-			ht.put((char) ('a'+i), new ArrayList<PlayerData> ());
+			ht.put((char) ('A'+i), new ArrayList<PlayerData> ());
 		}
 	}
 	
