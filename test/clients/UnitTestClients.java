@@ -65,7 +65,7 @@ public class UnitTestClients {
 	 */
 	@Test
 	public void test_signIn_and_signOut(){
-		PlayerClient p = new PlayerClient("mike", "burkat", 26, "anotherAS", "mmmmmm", "182.0.0.0");
+		PlayerClient p = new PlayerClient("mike", "burkat", 26, "AnotherAS", "mmmmmm", "182.0.0.0");
 		assertTrue(p.createPlayerAccount());
 		assertTrue(p.playerSignIn());
 		assertTrue(p.playerSignOut());
