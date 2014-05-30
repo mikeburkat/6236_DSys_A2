@@ -84,7 +84,7 @@ public class GameServerImpl extends GameServerPOA {
 	public String createPlayerAccount(String firstName, String lastName,
 			short age, String userName, String password, String ipAddress) {
 		// TODO Auto-generated method stub
-		return null;
+		return "Created";
 	}
 
 	@Override

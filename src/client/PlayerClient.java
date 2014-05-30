@@ -95,7 +95,7 @@ public class PlayerClient implements Runnable {
 		GameServer server = null;
 		String s = null;
 		
-		String[] args = new String[0];
+		String[] args = new String[1];
 		ORB orb = ORB.init(args, null);
 		BufferedReader br;
 		String na = null;
