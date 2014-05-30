@@ -5,7 +5,7 @@ import org.junit.Test;
 import client.AdministratorClient;
 import client.PlayerClient;
 
-public class UnitTestGameServer {
+public class UnitTestGameServerAssignment1 {
 	
 	/**
 	 * Tests that a player is created successfully,

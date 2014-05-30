@@ -52,6 +52,19 @@ public class AdministratorClient {
 	}
 
 	// ------------------------------------------------------------------------
+	
+	public boolean suspendAccount(String userNameToSuspend) {
+		GameServer server = findServer(ipAddress);
+		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
+		
+		String out = server.suspendAccount(adminUserName, adminPassword, ipAddress, userNameToSuspend);
+		System.out.println(out +"\n");
+		
+		boolean result = out.equals("Success") ? true : false;
+		return result;
+	}
+	
+	// ------------------------------------------------------------------------
 
 	private GameServer findServer(String ip) {
 		GameServer server = null;

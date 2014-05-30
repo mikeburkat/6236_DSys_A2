@@ -177,7 +177,7 @@ public class GameServerImpl extends GameServerPOA {
 	@Override
 	public String transferAccount(String userName, String password,
 			String oldIpAddress, String newIpAddress) {
-		
+
 		return "Not Implemented Yet";
 	}
 
@@ -185,7 +185,34 @@ public class GameServerImpl extends GameServerPOA {
 	public String suspendAccount(String adminUserName, String adminPassword,
 			String ipAddress, String userNameToSuspend) {
 
-		return "Not Implemented Yet";
+		if (!adminUserName.equals("Admin") || !adminPassword.equals("Admin")) {
+			log.addToServerLog("Admin: " + adminUserName
+					+ " requested player suspend on : " + userNameToSuspend
+					+ ", but user name or password was wrong.");
+			return "Not allowed, wrong user name or password.";
+		}
+
+		PlayerData pd = getPlayer(userNameToSuspend);
+		if (pd == null) {
+			log.addToServerLog("can't suspend account, because player "
+					+ userNameToSuspend + " was not found.");
+			return "Account suspension failed, account not found.";
+		}
+
+		String upperF = userNameToSuspend.substring(0, 1).toUpperCase();
+		char firstLetter = upperF.charAt(0);
+		ArrayList<PlayerData> pdArray = ht.get(firstLetter);
+		for (PlayerData p : pdArray) {
+			if (userNameToSuspend.equals(p.getUserName())) {
+				boolean success = pdArray.remove(p);
+				if (success) {
+					return "Success";
+				} else {
+					return "Failed";
+				}
+			}
+		}
+		return "Humm weird, technically you shouldn't be here";
 	}
 
 	// ------------------------------------------------------------------------
