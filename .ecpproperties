@@ -1,5 +1,5 @@
 #ECP Compilation Preferences
-#Wed May 28 21:52:09 EDT 2014
+#Fri May 30 13:56:38 EDT 2014
 src/gameserver/GameServer.idl.GENERATE_SKELETONS=true
 src/GameServer.idl.INVOKE_COMPILERS=net.sf.eclipscorba.compiler.openorb
 src/GameServer.idl.OUTPUT_DIRECTORY=

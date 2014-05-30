@@ -3,10 +3,10 @@ package gameserver;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import assignment1.PlayerData;
-import assignment1.ServerLog;
-import assignment1.UDPclient;
-import assignment1.UDPserver;
+import fromAss1.ServerLog;
+import fromAss1.UDPclient;
+import fromAss1.UDPserver;
+import fromAss1.PlayerData;
 
 public class GameServerImpl extends GameServerPOA {
 

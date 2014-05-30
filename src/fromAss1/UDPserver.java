@@ -1,4 +1,4 @@
-package assignment1;
+package fromAss1;
 
 import gameserver.GameServerImpl;
 

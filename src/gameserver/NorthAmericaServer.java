@@ -16,7 +16,7 @@ import org.omg.PortableServer.POAPackage.WrongPolicy;
 public class NorthAmericaServer {
 
 	public static void main(String[] args) throws InvalidName, ServantAlreadyActive, WrongPolicy, ObjectNotActive, FileNotFoundException, AdapterInactive {
-		// TODO Auto-generated method stub
+	
 		ORB orb = ORB.init(args, null);
 		POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 		
@@ -28,7 +28,7 @@ public class NorthAmericaServer {
 		String ior = orb.object_to_string(ref);
 		System.out.println(ior);
 		
-		PrintWriter file = new PrintWriter("ior.txt");
+		PrintWriter file = new PrintWriter("NA.txt");
 		file.println(ior);
 		file.close();
 		
