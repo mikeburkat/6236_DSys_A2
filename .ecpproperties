@@ -1,0 +1,26 @@
+#ECP Compilation Preferences
+#Wed May 28 21:52:09 EDT 2014
+src/gameserver/GameServer.idl.GENERATE_SKELETONS=true
+src/GameServer.idl.INVOKE_COMPILERS=net.sf.eclipscorba.compiler.openorb
+src/GameServer.idl.OUTPUT_DIRECTORY=
+.GENERATE_STUBS=true
+src/gameserver/GameServer.idl.GENERATE_STUBS=true
+.INCLUDE_PATHS=
+.GENERATE_TIES=false
+.INVOKE_COMPILERS=net.sf.eclipscorba.compiler.openorb
+src/GameServer.idl.GENERATE_STUBS=true
+.OUTPUT_DIRECTORY=
+src/GameServer.idl.GENERATE_SKELETONS=false
+src/gameserver/GameServer.idl.COMPILE=false
+src/gameserver/GameServer.idl.INCLUDE_PATHS=
+.GENERATE_SKELETONS=true
+src/gameserver/GameServer.idl.INVOKE_COMPILERS=net.sf.eclipscorba.compiler.openorb
+src/gameserver/GameServer.idl.GENERATE_TIES=false
+src/gameserver/GameServer.idl.OUTPUT_DIRECTORY=
+.CUSTOM_OPTIONS=false
+src/GameServer.idl.COMPILE=false
+src/gameserver/GameServer.idl.CUSTOM_OPTIONS=true
+src/GameServer.idl.INCLUDE_PATHS=
+src/GameServer.idl.GENERATE_TIES=false
+.COMPILE=false
+src/GameServer.idl.CUSTOM_OPTIONS=false
