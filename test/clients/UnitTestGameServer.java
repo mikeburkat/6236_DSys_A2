@@ -1,11 +1,7 @@
 package clients;
 
 import static org.junit.Assert.*;
-
-import java.io.IOException;
-
 import org.junit.Test;
-
 import client.AdministratorClient;
 import client.PlayerClient;
 
