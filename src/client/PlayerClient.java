@@ -21,7 +21,7 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class PlayerClient implements Runnable {
+public class PlayerClient {
 
 	private String firstName;
 	private String lastName;
@@ -37,11 +37,11 @@ public class PlayerClient implements Runnable {
 
 	// ------------------------------------------------------------------------
 
-	public PlayerClient(String fName, String lName, short a, String userN,
+	public PlayerClient(String fName, String lName, int a, String userN,
 			String pass, String ip) {
 		firstName = fName;
 		lastName = lName;
-		age = a;
+		age = (short) a;
 		userName = userN;
 		password = pass;
 		ipAddress = ip;
@@ -95,24 +95,10 @@ public class PlayerClient implements Runnable {
 		GameServer server = null;
 		String s = null;
 		
-		String[] args = new String[1];
-		ORB orb = ORB.init(args, null);
-		BufferedReader br;
-		String na = null;
-		try {
-			br = new BufferedReader(new FileReader("NA.txt"));
-
-			na = br.readLine();
-			br.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		System.out.println(na);
-
-		org.omg.CORBA.Object naObj = orb.string_to_object(na);
-		System.out.println("here");
-		GameServer naServer = GameServerHelper.narrow(naObj);
-
+		GameServer naServer = getServer("NA");
+		GameServer euServer = getServer("EU");
+		GameServer asServer = getServer("AS");
+		
 		boolean matches = Pattern.matches(
 				"^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", ip);
 		if (!matches) {
@@ -127,10 +113,10 @@ public class PlayerClient implements Runnable {
 				server = naServer;
 				break;
 			case "93.":
-				server = naServer;
+				server = euServer;
 				break;
 			case "182":
-				server = naServer;
+				server = asServer;
 				break;
 			default:
 				System.out.println("Invalid IP address: " + ip);
@@ -145,21 +131,28 @@ public class PlayerClient implements Runnable {
 	}
 
 	// ------------------------------------------------------------------------
-	/**
-	 * This is only used for testing concurrency. It is called from the
-	 * UnitTestClients
-	 */
-	@Override
-	public void run() {
-		createPlayerAccount();
-
-		for (int i = 0; i < 10; i++) {
-			playerSignIn();
-			playerSignOut();
+	
+	public GameServer getServer(String serverName) {
+		
+		String[] args = new String[1];
+		ORB orb = ORB.init(args, null);
+		BufferedReader br;
+		String na = null;
+		try {
+			br = new BufferedReader(new FileReader(serverName+".txt"));
+			na = br.readLine();
+			br.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-
+		
+		org.omg.CORBA.Object naObj = orb.string_to_object(na);
+		GameServer serv = GameServerHelper.narrow(naObj);
+		
+		return serv;
+	
 	}
-
+	
 	// ------------------------------------------------------------------------
 
 }
