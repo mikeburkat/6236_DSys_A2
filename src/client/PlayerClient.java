@@ -85,6 +85,19 @@ public class PlayerClient {
 		return result;
 
 	}
+	
+	// ------------------------------------------------------------------------
+	
+	public boolean transferAccount(String newIpAddress) {
+		
+		GameServer server = findServer(ipAddress);
+		System.out.println(userName + " " + ipAddress + " ");
+
+		String out = server.transferAccount(userName, password, ipAddress, newIpAddress);
+		System.out.println(out);
+		
+		return false;
+	}
 
 	// ------------------------------------------------------------------------
 

@@ -1,4 +1,6 @@
-package fromAss1;
+package other;
+
+import java.io.Serializable;
 
 //------------------------------------------------------------------------
 /**
@@ -8,8 +10,10 @@ package fromAss1;
  * 
  * @author Mike
  */
-public class PlayerData {
+public class PlayerData implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String userName;
 	private String firstName;
 	private String lastName;
@@ -76,6 +80,36 @@ public class PlayerData {
 
 	public String getUserName() {
 		return userName;
+	}
+	
+	//------------------------------------------------------------------------
+	
+	public String getFirstName() {
+		return firstName;
+	}
+
+	//------------------------------------------------------------------------
+	
+	public String getLastName() {
+		return lastName;
+	}
+
+	//------------------------------------------------------------------------
+	
+	public int getAge() {
+		return age;
+	}
+
+	//------------------------------------------------------------------------
+	
+	public String getPassword() {
+		return password;
+	}
+
+	//------------------------------------------------------------------------
+	
+	public String toString() {
+		return "UserName: " + userName + " Password: " + password +" First: "+ firstName + " Last: " + lastName + " Age: " + age + " Online:" + online ;
 	}
 	
 	//------------------------------------------------------------------------

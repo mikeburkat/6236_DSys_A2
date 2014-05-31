@@ -1,4 +1,4 @@
-package fromAss1;
+package other;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -12,14 +12,14 @@ import java.net.InetAddress;
  * 
  * @author Mike
  */
-public class UDPclient {
+public class UDPclientStatus {
 
 	DatagramSocket socket;
 	DatagramPacket request;
 	int udpPort;
 	InetAddress host;
 
-	public UDPclient(int udp) {
+	public UDPclientStatus(int udp) {
 		socket = null;
 		udpPort = udp;
 	}

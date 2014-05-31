@@ -1,4 +1,4 @@
-package fromAss1;
+package other;
 
 import java.io.BufferedWriter;
 import java.io.File;

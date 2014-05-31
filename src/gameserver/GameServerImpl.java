@@ -2,11 +2,14 @@ package gameserver;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.regex.Pattern;
 
-import fromAss1.PlayerData;
-import fromAss1.ServerLog;
-import fromAss1.UDPclient;
-import fromAss1.UDPserver;
+import other.PlayerData;
+import other.ServerLog;
+import other.UDPclientStatus;
+import other.UDPclientTransfer;
+import other.UDPserverStatus;
+import other.UDPserverTransfer;
 
 public class GameServerImpl extends GameServerPOA {
 
@@ -27,10 +30,11 @@ public class GameServerImpl extends GameServerPOA {
 	private int UDPclientServer1Port;
 	private int UDPclientServer2Port;
 	private int UDPserverPort;
-	private UDPserver udpS;
-	private UDPclient udpC1;
-	private UDPclient udpC2;
-
+	private UDPserverStatus udpSstatus;
+	private UDPclientStatus udpCstatus1;
+	private UDPclientStatus udpCstatus2;
+	private UDPserverTransfer udpStransfer;
+	private int myUDPtransferPort;
 	// ------------------------------------------------------------------------
 	// hash table and other data
 	private Hashtable<Character, ArrayList<PlayerData>> ht;
@@ -65,6 +69,7 @@ public class GameServerImpl extends GameServerPOA {
 		UDPserverPort = usp;
 		UDPclientServer1Port = uc1;
 		UDPclientServer2Port = uc2;
+		myUDPtransferPort = usp + 10;
 
 		playersOnline = 0;
 		playersOffline = 0;
@@ -85,8 +90,8 @@ public class GameServerImpl extends GameServerPOA {
 			log.addToAdminLog(adminUserName, "requested player status.");
 
 			String myStatus = getPlayerStatusString();
-			String s2 = udpC1.getStatus();
-			String s3 = udpC2.getStatus();
+			String s2 = udpCstatus1.getStatus();
+			String s3 = udpCstatus2.getStatus();
 
 			String s = myStatus + ", " + s2 + ", " + s3 + ".";
 
@@ -178,7 +183,74 @@ public class GameServerImpl extends GameServerPOA {
 	public String transferAccount(String userName, String password,
 			String oldIpAddress, String newIpAddress) {
 
-		return "Not Implemented Yet";
+		PlayerData pd = getPlayer(userName);
+		if (pd == null) {
+			log.addToServerLog("Transfer failed, player " + userName
+					+ " not found.");
+			return "Transfer failed, player not found.";
+		}
+
+		log.addToPlayerLog(userName, "requested transfer from " + oldIpAddress
+				+ " to " + newIpAddress);
+
+		int transferPort = getTransferClient(newIpAddress);
+
+		if (transferPort == -1) {
+			log.addToPlayerLog(userName, "Invalid transfer IP address "
+					+ newIpAddress);
+			return "Invalid transfer IP address " + newIpAddress;
+		} else if (transferPort == myUDPtransferPort) {
+			log.addToPlayerLog(userName, "Invalid transfer IP address "
+					+ newIpAddress + " can't transfer to myself.");
+			return "Invalid transfer IP address " + newIpAddress
+					+ " can't transfer to myself.";
+		}
+
+		UDPclientTransfer transferClient = new UDPclientTransfer(transferPort);
+		
+		String outcome = transferClient.transferPlayer(pd);
+		
+		if (outcome.equals("Created")) {
+			log.addToPlayerLog(userName, "Creation was Successful.");
+			String success = suspendAccount("Admin", "Admin", oldIpAddress, userName);
+			if (success.equals("Success")) {
+				log.addToPlayerLog(userName, "Player was suspended from original server.");
+			} else {
+				log.addToPlayerLog(userName, success);
+				return success;
+			}
+		} else {
+			log.addToPlayerLog(userName, outcome);
+			return outcome;
+		}
+		return outcome;
+	}
+
+	private int getTransferClient(String newIpAddress) {
+
+		boolean matches = Pattern.matches(
+				"^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$",
+				newIpAddress);
+		if (!matches) {
+			System.out.println("Invalid IP address: " + newIpAddress);
+			return -1;
+		}
+
+		String s = null;
+		s = newIpAddress.substring(0, 3);
+		switch (s) {
+		case "132":
+			return NORTH_AMERICA_UDP_PORT + 10;
+		case "93.":
+			return EUROPE_UDP_PORT + 10;
+		case "182":
+			return ASIA_UDP_PORT + 10;
+		default:
+			System.out.println("Invalid IP address: " + newIpAddress);
+			break;
+		}
+		;
+		return -1;
 	}
 
 	@Override
@@ -253,16 +325,19 @@ public class GameServerImpl extends GameServerPOA {
 
 	// ------------------------------------------------------------------------
 	void initUDPserver() {
-		udpS = new UDPserver(this, UDPserverPort);
-		new Thread(udpS).start();
+		udpSstatus = new UDPserverStatus(this, UDPserverPort);
+		new Thread(udpSstatus).start();
 
+		udpStransfer = new UDPserverTransfer(this, myUDPtransferPort);
+		new Thread(udpStransfer).start();
 	}
 
 	// ------------------------------------------------------------------------
 
 	void initUDPclients() {
-		udpC1 = new UDPclient(UDPclientServer1Port);
-		udpC2 = new UDPclient(UDPclientServer2Port);
+		udpCstatus1 = new UDPclientStatus(UDPclientServer1Port);
+		udpCstatus2 = new UDPclientStatus(UDPclientServer2Port);
+
 	}
 
 	// ------------------------------------------------------------------------

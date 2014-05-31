@@ -1,4 +1,4 @@
-package fromAss1;
+package other;
 
 import gameserver.GameServerImpl;
 
@@ -13,13 +13,13 @@ import java.net.SocketException;
  * 
  * @author Mike
  */
-public class UDPserver implements Runnable {
+public class UDPserverStatus implements Runnable {
 
 	DatagramSocket socket;
 	GameServerImpl gameServer;
 	int UDPserverPort;
 
-	public UDPserver(GameServerImpl gs, int udp) {
+	public UDPserverStatus(GameServerImpl gs, int udp) {
 		gameServer = gs;
 		UDPserverPort = udp;
 	}
