@@ -105,9 +105,9 @@ public class PlayerClient {
 		GameServer server = null;
 		String s = null;
 		
-		GameServer naServer = getServer("NA");
-		GameServer euServer = getServer("EU");
-		GameServer asServer = getServer("AS");
+//		GameServer naServer = getServer("NA");
+//		GameServer euServer = getServer("EU");
+//		GameServer asServer = getServer("AS");
 		
 		boolean matches = Pattern.matches(
 				"^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", ip);
@@ -120,13 +120,13 @@ public class PlayerClient {
 		try {
 			switch (s) {
 			case "132":
-				server = naServer;
+				server = getServer("NA");
 				break;
 			case "93.":
-				server = euServer;
+				server = getServer("EU");
 				break;
 			case "182":
-				server = asServer;
+				server = getServer("AS");
 				break;
 			default:
 				System.out.println("Invalid IP address: " + ip);
