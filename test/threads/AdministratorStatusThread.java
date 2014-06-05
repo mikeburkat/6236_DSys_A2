@@ -1,4 +1,4 @@
-package clients;
+package threads;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -17,33 +17,38 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class AdministratorSuspendThread implements Runnable {
+public class AdministratorStatusThread implements Runnable {
 
 	private String adminUserName;
 	private String adminPassword;
 	private String ipAddress;
-	private String userNameToSuspend;
 	
 	// ------------------------------------------------------------------------
 	
-	public AdministratorSuspendThread(String aUserN, String aPass, String ip, String userSuspend) {
+	public AdministratorStatusThread(String aUserN, String aPass, String ip) {
 		adminUserName = aUserN;
 		adminPassword = aPass;
 		ipAddress = ip;
-		userNameToSuspend = userSuspend;
 	}
-
+	
 	// ------------------------------------------------------------------------
 	
-	public boolean suspendAccount() {
+	public String getPlayerStatus(String aUserN, String aPass, String ip) {
+		adminUserName = aUserN;
+		adminPassword = aPass;
+		ipAddress = ip;
+		return getPlayerStatus();
+	}
+	
+	// ------------------------------------------------------------------------
+	
+	public String getPlayerStatus() {
 		GameServer server = findServer(ipAddress);
-		System.out.println("suspend:" + adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
+		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " ");
 		
-		String out = server.suspendAccount(adminUserName, adminPassword, ipAddress, userNameToSuspend);
-		System.out.println(out +"\n");
-		
-		boolean result = out.equals("Success") ? true : false;
-		return result;
+		String s = server.getPlayerStatus(adminUserName, adminPassword, ipAddress);
+		System.out.println(s +"\n");
+		return s;
 	}
 	
 	// ------------------------------------------------------------------------
@@ -113,14 +118,8 @@ public class AdministratorSuspendThread implements Runnable {
 	 */
 	@Override
 	public void run() {
-		for (int i = 0; i < 10; i++) {
-			suspendAccount();
-			
-			try {
-			    Thread.sleep(150);
-			} catch(InterruptedException ex) {
-			    Thread.currentThread().interrupt();
-			}
+		for (int i = 0; i < 5; i++) {
+			getPlayerStatus();
 		}
 	}
 	

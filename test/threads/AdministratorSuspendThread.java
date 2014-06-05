@@ -1,4 +1,4 @@
-package clients;
+package threads;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -12,63 +12,40 @@ import org.omg.CORBA.ORB;
 
 //----------------------------------------------------------------------------
 /**
- * This is the player client. This represents one player. A player can create
- * its self on the server, sign in and sign out, by calling the appropriate
- * methods.
+ * This is the administrator client. This represents one administrator.
+ * An administrator can get the player status.
  * 
  * @author Mike
  */
-public class PlayerTransferThread implements Runnable{
+public class AdministratorSuspendThread implements Runnable {
 
-	private String firstName;
-	private String lastName;
-	private short age;
-	private String userName;
-	private String password;
+	private String adminUserName;
+	private String adminPassword;
 	private String ipAddress;
-	private String newIpAddress;
-
+	private String userNameToSuspend;
+	
 	// ------------------------------------------------------------------------
-
-	public PlayerTransferThread(String fName, String lName, int a, String userN,
-			String pass, String ip, String newIp) {
-		firstName = fName;
-		lastName = lName;
-		age = (short) a;
-		userName = userN;
-		password = pass;
+	
+	public AdministratorSuspendThread(String aUserN, String aPass, String ip, String userSuspend) {
+		adminUserName = aUserN;
+		adminPassword = aPass;
 		ipAddress = ip;
-		newIpAddress = newIp;
+		userNameToSuspend = userSuspend;
 	}
 
 	// ------------------------------------------------------------------------
-
-	public boolean createPlayerAccount() {
-		System.out.println("create:" + userName + " " + password + " " + ipAddress + " ");
+	
+	public boolean suspendAccount() {
 		GameServer server = findServer(ipAddress);
-
-		String out = server.createPlayerAccount(firstName, lastName, age,
-				userName, password, ipAddress);
-		System.out.println(out + "\n");
-		boolean result = out.equals("Created") ? true : false;
+		System.out.println("suspend:" + adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
+		
+		String out = server.suspendAccount(adminUserName, adminPassword, ipAddress, userNameToSuspend);
+		System.out.println(out +"\n");
+		
+		boolean result = out.equals("Success") ? true : false;
 		return result;
-
 	}
-
 	
-	// ------------------------------------------------------------------------
-	
-	public boolean transferAccount() {
-		
-		GameServer server = findServer(ipAddress);
-		System.out.println("transfer:" + userName + " " + ipAddress + " ");
-
-		String out = server.transferAccount(userName, password, ipAddress, newIpAddress);
-		System.out.println(out + "\n");
-		
-		return false;
-	}
-
 	// ------------------------------------------------------------------------
 
 	private GameServer findServer(String ip) {
@@ -130,31 +107,23 @@ public class PlayerTransferThread implements Runnable{
 	}
 	
 	// ------------------------------------------------------------------------
-		/**
-		 * This is only used for testing concurrency. It is called from the UnitTestClients
-		 */
-		@Override
-		public void run() {
+	
+	/**
+	 * This is only used for testing concurrency. It is called from the UnitTestClients
+	 */
+	@Override
+	public void run() {
+		for (int i = 0; i < 10; i++) {
+			suspendAccount();
 			
-			for (int i = 0; i < 10; i++) {
-				createPlayerAccount();
-				
-				try {
-				    Thread.sleep(50);
-				} catch(InterruptedException ex) {
-				    Thread.currentThread().interrupt();
-				}
-				
-				transferAccount();
-				try {
-				    Thread.sleep(50);
-				} catch(InterruptedException ex) {
-				    Thread.currentThread().interrupt();
-				}
+			try {
+			    Thread.sleep(150);
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
 			}
-			
 		}
-		
-		// ------------------------------------------------------------------------
+	}
+	
+	// ------------------------------------------------------------------------
 
 }

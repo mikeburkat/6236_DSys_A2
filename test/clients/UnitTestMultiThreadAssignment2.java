@@ -2,6 +2,9 @@ package clients;
 
 import org.junit.Test;
 
+import threads.AdministratorSuspendThread;
+import threads.PlayerTransferThread;
+
 public class UnitTestMultiThreadAssignment2 {
 
 	

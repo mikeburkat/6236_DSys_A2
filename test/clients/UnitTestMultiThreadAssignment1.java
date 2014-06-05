@@ -2,6 +2,9 @@ package clients;
 
 import org.junit.Test;
 
+import threads.AdministratorStatusThread;
+import threads.PlayerSignInOutThread;
+
 public class UnitTestMultiThreadAssignment1 {
 
 	/**

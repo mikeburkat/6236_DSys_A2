@@ -1,4 +1,4 @@
-package clients;
+package threads;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -18,7 +18,7 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class PlayerSignInOutThread implements Runnable{
+public class PlayerTransferThread implements Runnable{
 
 	private String firstName;
 	private String lastName;
@@ -26,22 +26,19 @@ public class PlayerSignInOutThread implements Runnable{
 	private String userName;
 	private String password;
 	private String ipAddress;
+	private String newIpAddress;
 
 	// ------------------------------------------------------------------------
 
-	public PlayerSignInOutThread() {
-	}
-
-	// ------------------------------------------------------------------------
-
-	public PlayerSignInOutThread(String fName, String lName, int a, String userN,
-			String pass, String ip) {
+	public PlayerTransferThread(String fName, String lName, int a, String userN,
+			String pass, String ip, String newIp) {
 		firstName = fName;
 		lastName = lName;
 		age = (short) a;
 		userName = userN;
 		password = pass;
 		ipAddress = ip;
+		newIpAddress = newIp;
 	}
 
 	// ------------------------------------------------------------------------
@@ -57,43 +54,16 @@ public class PlayerSignInOutThread implements Runnable{
 		return result;
 
 	}
-
-	// ------------------------------------------------------------------------
-
-	public boolean playerSignIn() {
-		String out = "";
-		GameServer server = findServer(ipAddress);
-		System.out.println("signIn:" + userName + " " + password + " " + ipAddress + " ");
-
-		out = server.playerSignIn(userName, password, ipAddress);
-		System.out.println(out + "\n");
-		boolean result = out.equals("Signed In") ? true : false;
-		return result;
-
-	}
-
-	// ------------------------------------------------------------------------
-
-	public boolean playerSignOut() {
-		GameServer server = findServer(ipAddress);
-		System.out.println("signOut:" + userName + " " + ipAddress + " ");
-
-		String out = server.playerSignOut(userName, ipAddress);
-		System.out.println(out + "\n");
-		boolean result = out.equals("Signed Out") ? true : false;
-		return result;
-
-	}
 	
 	// ------------------------------------------------------------------------
 	
-	public boolean transferAccount(String newIpAddress) {
+	public boolean transferAccount() {
 		
 		GameServer server = findServer(ipAddress);
 		System.out.println("transfer:" + userName + " " + ipAddress + " ");
 
 		String out = server.transferAccount(userName, password, ipAddress, newIpAddress);
-		System.out.println(out);
+		System.out.println(out + "\n");
 		
 		return false;
 	}
@@ -164,11 +134,22 @@ public class PlayerSignInOutThread implements Runnable{
 		 */
 		@Override
 		public void run() {
-			createPlayerAccount();
 			
 			for (int i = 0; i < 10; i++) {
-				playerSignIn();
-				playerSignOut();
+				createPlayerAccount();
+				
+				try {
+				    Thread.sleep(50);
+				} catch(InterruptedException ex) {
+				    Thread.currentThread().interrupt();
+				}
+				
+				transferAccount();
+				try {
+				    Thread.sleep(50);
+				} catch(InterruptedException ex) {
+				    Thread.currentThread().interrupt();
+				}
 			}
 			
 		}

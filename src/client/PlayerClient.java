@@ -29,11 +29,6 @@ public class PlayerClient {
 
 	// ------------------------------------------------------------------------
 
-	public PlayerClient() {
-	}
-
-	// ------------------------------------------------------------------------
-
 	public PlayerClient(String fName, String lName, int a, String userN,
 			String pass, String ip) {
 		firstName = fName;
