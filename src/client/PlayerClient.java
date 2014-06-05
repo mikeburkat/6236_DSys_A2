@@ -18,7 +18,7 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class PlayerClient {
+public class PlayerClient implements Runnable{
 
 	private String firstName;
 	private String lastName;
@@ -49,7 +49,6 @@ public class PlayerClient {
 	public boolean createPlayerAccount() {
 		System.out.println(userName + " " + password + " " + ipAddress + " ");
 		GameServer server = findServer(ipAddress);
-		System.out.println(userName + " " + password + " " + ipAddress + " ");
 
 		String out = server.createPlayerAccount(firstName, lastName, age,
 				userName, password, ipAddress);
@@ -104,10 +103,6 @@ public class PlayerClient {
 	private GameServer findServer(String ip) {
 		GameServer server = null;
 		String s = null;
-		
-//		GameServer naServer = getServer("NA");
-//		GameServer euServer = getServer("EU");
-//		GameServer asServer = getServer("AS");
 		
 		boolean matches = Pattern.matches(
 				"^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", ip);
@@ -164,5 +159,20 @@ public class PlayerClient {
 	}
 	
 	// ------------------------------------------------------------------------
+		/**
+		 * This is only used for testing concurrency. It is called from the UnitTestClients
+		 */
+		@Override
+		public void run() {
+			createPlayerAccount();
+			
+			for (int i = 0; i < 10; i++) {
+				playerSignIn();
+				playerSignOut();
+			}
+			
+		}
+		
+		// ------------------------------------------------------------------------
 
 }

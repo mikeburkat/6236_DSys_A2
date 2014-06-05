@@ -74,7 +74,7 @@ public class ServerLog {
 	
 	private void write(String s, BufferedWriter bw) {
 		String out = "";
-		out += new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
+		out += new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(Calendar.getInstance().getTime());
 		out += " " + s;
 		
 		try {

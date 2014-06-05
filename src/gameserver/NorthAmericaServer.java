@@ -13,7 +13,7 @@ import org.omg.PortableServer.POAPackage.ServantAlreadyActive;
 import org.omg.PortableServer.POAPackage.WrongPolicy;
 
 
-public class NorthAmericaServer {
+public class NorthAmericaServer implements Runnable {
 
 	public static void main(String[] args) throws InvalidName, ServantAlreadyActive, WrongPolicy, ObjectNotActive, FileNotFoundException, AdapterInactive {
 	
@@ -36,4 +36,16 @@ public class NorthAmericaServer {
 		orb.run();
 		
 	}
+
+	@Override
+	public void run() {
+			try {
+				main(null);
+			} catch (InvalidName | ServantAlreadyActive | WrongPolicy
+					| ObjectNotActive | FileNotFoundException | AdapterInactive e) {
+				e.printStackTrace();
+			}
+		
+	}
+	
 }

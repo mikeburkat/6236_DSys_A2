@@ -1,4 +1,4 @@
-package client;
+package clients;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -17,27 +17,20 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class AdministratorClient implements Runnable {
+public class AdministratorSuspendThread implements Runnable {
 
 	private String adminUserName;
 	private String adminPassword;
 	private String ipAddress;
+	private String userNameToSuspend;
 	
 	// ------------------------------------------------------------------------
 	
-	public AdministratorClient(String aUserN, String aPass, String ip) {
+	public AdministratorSuspendThread(String aUserN, String aPass, String ip, String userSuspend) {
 		adminUserName = aUserN;
 		adminPassword = aPass;
 		ipAddress = ip;
-	}
-	
-	// ------------------------------------------------------------------------
-	
-	public String getPlayerStatus(String aUserN, String aPass, String ip) {
-		adminUserName = aUserN;
-		adminPassword = aPass;
-		ipAddress = ip;
-		return getPlayerStatus();
+		userNameToSuspend = userSuspend;
 	}
 	
 	// ------------------------------------------------------------------------
@@ -53,7 +46,7 @@ public class AdministratorClient implements Runnable {
 
 	// ------------------------------------------------------------------------
 	
-	public boolean suspendAccount(String userNameToSuspend) {
+	public boolean suspendAccount() {
 		GameServer server = findServer(ipAddress);
 		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
 		
@@ -131,8 +124,8 @@ public class AdministratorClient implements Runnable {
 	 */
 	@Override
 	public void run() {
-		for (int i = 0; i < 5; i++) {
-			getPlayerStatus();
+		for (int i = 0; i < 10; i++) {
+			suspendAccount();
 		}
 	}
 	

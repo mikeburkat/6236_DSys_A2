@@ -1,7 +1,9 @@
 package clients;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
+
 import client.AdministratorClient;
 import client.PlayerClient;
 
@@ -144,6 +146,38 @@ public class UnitTestGameServerAssignment1 {
 	public void test_get_status_AS(){
 		AdministratorClient a = new AdministratorClient("Admin", "Admin", "182.0.0.0");
 		a.getPlayerStatus();
+	}
+	
+	/**
+	 * This tests that concurrent access to the servers does not create deadlock.
+	 * I created three administrators, one on each server.
+	 * I created four players, one on each server, 
+	 * and a two on the North American server.
+	 * The administrator threads call five statuses.
+	 * The player threads create their player, and then 
+	 * they sign in and sign out in a loop 10 times.
+	 * 
+	 * You need to manually inspect the logged results.
+	 */
+	@Test
+	public void test_multi_thread_signIn_signOut() {
+		AdministratorClient a1 = new AdministratorClient("Admin", "Admin", "182.0.0.0");
+		AdministratorClient a2 = new AdministratorClient("Admin", "Admin", "93.0.0.0");
+		AdministratorClient a3 = new AdministratorClient("Admin", "Admin", "132.0.0.0");
+		
+		PlayerClient p1 = new PlayerClient("mike", "burkat", 26, "multiThrAS", "123456", "182.0.0.0");
+		PlayerClient p2 = new PlayerClient("mike", "burkat", 26, "multiThrEU", "123456", "93.0.0.0");
+		PlayerClient p3 = new PlayerClient("mike", "burkat", 26, "multiThrNA", "123456", "132.0.0.0");
+		PlayerClient p4 = new PlayerClient("mike", "burkat", 26, "multiThrNA2", "123456", "132.0.0.0");
+		
+		new Thread(p1).start();
+		new Thread(a1).start();
+		new Thread(p2).start();
+		new Thread(a2).start();
+		new Thread(p3).start();
+		new Thread(a3).start();
+		new Thread(p4).start();
+
 	}
 	
 

@@ -1,4 +1,4 @@
-package client;
+package clients;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -12,58 +12,63 @@ import org.omg.CORBA.ORB;
 
 //----------------------------------------------------------------------------
 /**
- * This is the administrator client. This represents one administrator.
- * An administrator can get the player status.
+ * This is the player client. This represents one player. A player can create
+ * its self on the server, sign in and sign out, by calling the appropriate
+ * methods.
  * 
  * @author Mike
  */
-public class AdministratorClient implements Runnable {
+public class PlayerTransferThread implements Runnable{
 
-	private String adminUserName;
-	private String adminPassword;
+	private String firstName;
+	private String lastName;
+	private short age;
+	private String userName;
+	private String password;
 	private String ipAddress;
-	
+	private String newIpAddress;
+
 	// ------------------------------------------------------------------------
-	
-	public AdministratorClient(String aUserN, String aPass, String ip) {
-		adminUserName = aUserN;
-		adminPassword = aPass;
+
+	public PlayerTransferThread(String fName, String lName, int a, String userN,
+			String pass, String ip, String newIp) {
+		firstName = fName;
+		lastName = lName;
+		age = (short) a;
+		userName = userN;
+		password = pass;
 		ipAddress = ip;
-	}
-	
-	// ------------------------------------------------------------------------
-	
-	public String getPlayerStatus(String aUserN, String aPass, String ip) {
-		adminUserName = aUserN;
-		adminPassword = aPass;
-		ipAddress = ip;
-		return getPlayerStatus();
-	}
-	
-	// ------------------------------------------------------------------------
-	
-	public String getPlayerStatus() {
-		GameServer server = findServer(ipAddress);
-		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " ");
-		
-		String s = server.getPlayerStatus(adminUserName, adminPassword, ipAddress);
-		System.out.println(s +"\n");
-		return s;
+		newIpAddress = newIp;
 	}
 
 	// ------------------------------------------------------------------------
-	
-	public boolean suspendAccount(String userNameToSuspend) {
+
+	public boolean createPlayerAccount() {
+		System.out.println(userName + " " + password + " " + ipAddress + " ");
 		GameServer server = findServer(ipAddress);
-		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
-		
-		String out = server.suspendAccount(adminUserName, adminPassword, ipAddress, userNameToSuspend);
-		System.out.println(out +"\n");
-		
-		boolean result = out.equals("Success") ? true : false;
+
+		String out = server.createPlayerAccount(firstName, lastName, age,
+				userName, password, ipAddress);
+		System.out.println(out + "\n");
+		boolean result = out.equals("Created") ? true : false;
 		return result;
+
 	}
+
 	
+	// ------------------------------------------------------------------------
+	
+	public boolean transferAccount() {
+		
+		GameServer server = findServer(ipAddress);
+		System.out.println(userName + " " + ipAddress + " ");
+
+		String out = server.transferAccount(userName, password, ipAddress, newIpAddress);
+		System.out.println(out + "\n");
+		
+		return false;
+	}
+
 	// ------------------------------------------------------------------------
 
 	private GameServer findServer(String ip) {
@@ -125,17 +130,19 @@ public class AdministratorClient implements Runnable {
 	}
 	
 	// ------------------------------------------------------------------------
-	
-	/**
-	 * This is only used for testing concurrency. It is called from the UnitTestClients
-	 */
-	@Override
-	public void run() {
-		for (int i = 0; i < 5; i++) {
-			getPlayerStatus();
+		/**
+		 * This is only used for testing concurrency. It is called from the UnitTestClients
+		 */
+		@Override
+		public void run() {
+			
+			for (int i = 0; i < 10; i++) {
+				createPlayerAccount();
+				transferAccount();
+			}
+			
 		}
-	}
-	
-	// ------------------------------------------------------------------------
+		
+		// ------------------------------------------------------------------------
 
 }
