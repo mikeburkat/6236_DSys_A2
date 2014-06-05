@@ -44,7 +44,7 @@ public class PlayerTransferThread implements Runnable{
 	// ------------------------------------------------------------------------
 
 	public boolean createPlayerAccount() {
-		System.out.println(userName + " " + password + " " + ipAddress + " ");
+		System.out.println("create:" + userName + " " + password + " " + ipAddress + " ");
 		GameServer server = findServer(ipAddress);
 
 		String out = server.createPlayerAccount(firstName, lastName, age,
@@ -61,7 +61,7 @@ public class PlayerTransferThread implements Runnable{
 	public boolean transferAccount() {
 		
 		GameServer server = findServer(ipAddress);
-		System.out.println(userName + " " + ipAddress + " ");
+		System.out.println("transfer:" + userName + " " + ipAddress + " ");
 
 		String out = server.transferAccount(userName, password, ipAddress, newIpAddress);
 		System.out.println(out + "\n");
@@ -138,7 +138,19 @@ public class PlayerTransferThread implements Runnable{
 			
 			for (int i = 0; i < 10; i++) {
 				createPlayerAccount();
+				
+				try {
+				    Thread.sleep(50);
+				} catch(InterruptedException ex) {
+				    Thread.currentThread().interrupt();
+				}
+				
 				transferAccount();
+				try {
+				    Thread.sleep(50);
+				} catch(InterruptedException ex) {
+				    Thread.currentThread().interrupt();
+				}
 			}
 			
 		}

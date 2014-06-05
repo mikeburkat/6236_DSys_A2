@@ -1,4 +1,4 @@
-package client;
+package clients;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -18,7 +18,7 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class PlayerClient {
+public class PlayerSignInOutThread implements Runnable{
 
 	private String firstName;
 	private String lastName;
@@ -29,12 +29,12 @@ public class PlayerClient {
 
 	// ------------------------------------------------------------------------
 
-	public PlayerClient() {
+	public PlayerSignInOutThread() {
 	}
 
 	// ------------------------------------------------------------------------
 
-	public PlayerClient(String fName, String lName, int a, String userN,
+	public PlayerSignInOutThread(String fName, String lName, int a, String userN,
 			String pass, String ip) {
 		firstName = fName;
 		lastName = lName;
@@ -159,5 +159,20 @@ public class PlayerClient {
 	}
 	
 	// ------------------------------------------------------------------------
+		/**
+		 * This is only used for testing concurrency. It is called from the UnitTestClients
+		 */
+		@Override
+		public void run() {
+			createPlayerAccount();
+			
+			for (int i = 0; i < 10; i++) {
+				playerSignIn();
+				playerSignOut();
+			}
+			
+		}
+		
+		// ------------------------------------------------------------------------
 
 }

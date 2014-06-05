@@ -32,23 +32,12 @@ public class AdministratorSuspendThread implements Runnable {
 		ipAddress = ip;
 		userNameToSuspend = userSuspend;
 	}
-	
-	// ------------------------------------------------------------------------
-	
-	public String getPlayerStatus() {
-		GameServer server = findServer(ipAddress);
-		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " ");
-		
-		String s = server.getPlayerStatus(adminUserName, adminPassword, ipAddress);
-		System.out.println(s +"\n");
-		return s;
-	}
 
 	// ------------------------------------------------------------------------
 	
 	public boolean suspendAccount() {
 		GameServer server = findServer(ipAddress);
-		System.out.println(adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
+		System.out.println("suspend:" + adminUserName +" "+ adminPassword +" "+ ipAddress + " "+ userNameToSuspend);
 		
 		String out = server.suspendAccount(adminUserName, adminPassword, ipAddress, userNameToSuspend);
 		System.out.println(out +"\n");
@@ -126,6 +115,12 @@ public class AdministratorSuspendThread implements Runnable {
 	public void run() {
 		for (int i = 0; i < 10; i++) {
 			suspendAccount();
+			
+			try {
+			    Thread.sleep(150);
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
 		}
 	}
 	

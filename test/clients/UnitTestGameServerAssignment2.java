@@ -45,25 +45,6 @@ public class UnitTestGameServerAssignment2 {
 		
 	}
 	
-	@Test 
-	public void test_multi_thread_transfer_suspend() {
-		
-		PlayerTransferThread ptt = new PlayerTransferThread("mikewcd", "burkat", 26, "multiTransfer", "mmmmmm", "93.0.0.0", "182.0.0.0");
-		AdministratorSuspendThread ast = new AdministratorSuspendThread("Admin", "Admin", "93.0.0.0", "multiTransfer");
-		
-		Thread t1 = new Thread(ptt);
-		Thread t2 = new Thread(ast);
-		
-		t1.start();
-		t2.start();
-		
-		try {
-			t1.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
 
 }

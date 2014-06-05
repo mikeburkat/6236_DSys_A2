@@ -96,9 +96,9 @@ public class GameServerImpl extends GameServerPOA {
 	// ------------------------------------------------------------------------
 
 	@Override
-	public String getPlayerStatus(String adminUserName, String adminPassword,
+	public synchronized String getPlayerStatus(String adminUserName, String adminPassword,
 			String ipAddress) {
-		synchronized (statusLock) {
+//		synchronized (statusLock) {
 
 			if (adminUserName.equals("Admin") && adminPassword.equals("Admin")) {
 
@@ -118,15 +118,15 @@ public class GameServerImpl extends GameServerPOA {
 						+ " requested player status, but user name or password was wrong.");
 				return "Not allowed, wrong user name or password.";
 			}
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
 	@Override
-	public String createPlayerAccount(String firstName, String lastName,
+	public synchronized String createPlayerAccount(String firstName, String lastName,
 			short age, String userName, String password, String ipAddress) {
-		synchronized (createLock) {
+//		synchronized (createLock) {
 			PlayerData pd = getPlayer(userName);
 			if (pd != null) {
 				String s = "Player: " + userName
@@ -150,15 +150,15 @@ public class GameServerImpl extends GameServerPOA {
 				log.addToServerLog(s);
 				return s;
 			}
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
 	@Override
-	public String playerSignIn(String userName, String password,
+	public synchronized String playerSignIn(String userName, String password,
 			String ipAddress) {
-		synchronized (statusLock) {
+//		synchronized (statusLock) {
 			PlayerData pd = getPlayer(userName);
 			if (pd == null) {
 				log.addToServerLog("Sign In Failed, player " + userName
@@ -177,14 +177,14 @@ public class GameServerImpl extends GameServerPOA {
 				log.addToPlayerLog(userName, s);
 				return s;
 			}
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
 	@Override
-	public String playerSignOut(String userName, String ipAddress) {
-		synchronized (statusLock) {
+	public synchronized String playerSignOut(String userName, String ipAddress) {
+//		synchronized (statusLock) {
 			PlayerData pd = getPlayer(userName);
 			if (pd == null) {
 				log.addToServerLog("Sign Out Failed, player " + userName
@@ -204,15 +204,15 @@ public class GameServerImpl extends GameServerPOA {
 						"Sign Out Failed, user not currently signed in");
 				return "Sign Out Failed, user not currently signed in";
 			}
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
 	@Override
-	public String transferAccount(String userName, String password,
+	public synchronized String transferAccount(String userName, String password,
 			String oldIpAddress, String newIpAddress) {
-		synchronized (transferSuspendLock) {
+//		synchronized (transferSuspendLock) {
 			PlayerData pd = getPlayer(userName);
 			if (pd == null) {
 				log.addToServerLog("Transfer failed, player " + userName
@@ -248,7 +248,7 @@ public class GameServerImpl extends GameServerPOA {
 				
 				if (success.equals("Success")) {
 					log.addToPlayerLog(userName,
-							"Player was suspended from this server.");
+							"Transfer account suspended from this server.");
 					return "Player was Transfered.";
 				
 				} else {
@@ -260,13 +260,13 @@ public class GameServerImpl extends GameServerPOA {
 				log.addToPlayerLog(userName, outcome);
 				return outcome;
 			}
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
-	private int getTransferClient(String newIpAddress) {
-		synchronized (transferSuspendLock) {
+	private synchronized int getTransferClient(String newIpAddress) {
+//		synchronized (transferSuspendLock) {
 		boolean matches = Pattern.matches(
 				"^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$",
 				newIpAddress);
@@ -290,17 +290,15 @@ public class GameServerImpl extends GameServerPOA {
 		}
 		;
 		return -1;
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
 	@Override
-	public String suspendAccount(String adminUserName, String adminPassword,
+	public synchronized String suspendAccount(String adminUserName, String adminPassword,
 			String ipAddress, String userNameToSuspend) {
-		synchronized (transferSuspendLock) {
-			
-			
+//		synchronized (transferSuspendLock) {
 			
 			if (!adminUserName.equals("Admin") || !adminPassword.equals("Admin")) {
 				log.addToServerLog("Admin: " + adminUserName
@@ -311,9 +309,9 @@ public class GameServerImpl extends GameServerPOA {
 
 			PlayerData pd = getPlayer(userNameToSuspend);
 			if (pd == null) {
-				log.addToServerLog("can't suspend account, because player "
+				log.addToServerLog("Suspend failed, because player "
 						+ userNameToSuspend + " was not found.");
-				return "Account suspension failed, account not found.";
+				return "Suspension failed, account not found.";
 			}
 
 			String upperF = userNameToSuspend.substring(0, 1).toUpperCase();
@@ -323,20 +321,22 @@ public class GameServerImpl extends GameServerPOA {
 				if (userNameToSuspend.equals(p.getUserName())) {
 					boolean success = pdArray.remove(p);
 					if (success) {
+						log.addToPlayerLog(userNameToSuspend, "account suspended successfully.");
 						return "Success";
 					} else {
+						log.addToPlayerLog(userNameToSuspend, "account suspension failed, error in hash table.");
 						return "Failed";
 					}
 				}
 			}
 			return "Humm weird, technically you shouldn't be here";
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
-	private PlayerData getPlayer(String userName) {
-		synchronized (hashTableLock) {
+	private synchronized PlayerData getPlayer(String userName) {
+//		synchronized (hashTableLock) {
 			String upperF = userName.substring(0, 1).toUpperCase();
 			char firstLetter = upperF.charAt(0);
 			ArrayList<PlayerData> pd = ht.get(firstLetter);
@@ -346,20 +346,20 @@ public class GameServerImpl extends GameServerPOA {
 				}
 			}
 			return null;
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------
 
 	public String getPlayerStatusString() {
-		synchronized (statusStringLock) {
+//		synchronized (statusStringLock) {
 			String s = "";
 			s += serverName + ": ";
 			s += playersOnline + " online, ";
 			s += (totalPlayers - playersOnline) + " offline";
 
 			return s;
-		}
+//		}
 	}
 
 	// ------------------------------------------------------------------------

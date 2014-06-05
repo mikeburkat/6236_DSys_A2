@@ -1,4 +1,4 @@
-package client;
+package clients;
 
 import gameserver.GameServer;
 import gameserver.GameServerHelper;
@@ -17,7 +17,7 @@ import org.omg.CORBA.ORB;
  * 
  * @author Mike
  */
-public class AdministratorClient {
+public class AdministratorStatusThread implements Runnable {
 
 	private String adminUserName;
 	private String adminPassword;
@@ -25,7 +25,7 @@ public class AdministratorClient {
 	
 	// ------------------------------------------------------------------------
 	
-	public AdministratorClient(String aUserN, String aPass, String ip) {
+	public AdministratorStatusThread(String aUserN, String aPass, String ip) {
 		adminUserName = aUserN;
 		adminPassword = aPass;
 		ipAddress = ip;
@@ -122,6 +122,18 @@ public class AdministratorClient {
 		
 		return serv;
 	
+	}
+	
+	// ------------------------------------------------------------------------
+	
+	/**
+	 * This is only used for testing concurrency. It is called from the UnitTestClients
+	 */
+	@Override
+	public void run() {
+		for (int i = 0; i < 5; i++) {
+			getPlayerStatus();
+		}
 	}
 	
 	// ------------------------------------------------------------------------

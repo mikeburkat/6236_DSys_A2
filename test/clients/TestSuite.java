@@ -8,7 +8,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
   UnitTestGameServerAssignment1.class,
-  UnitTestGameServerAssignment2.class
+  UnitTestGameServerAssignment2.class,
+  UnitTestMultiThreadAssignment1.class,
+  UnitTestMultiThreadAssignment2.class
 })
 
 public class TestSuite {
