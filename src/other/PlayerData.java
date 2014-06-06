@@ -105,6 +105,16 @@ public class PlayerData implements Serializable {
 	public String getPassword() {
 		return password;
 	}
+	
+	//------------------------------------------------------------------------
+	
+	public boolean validatePassword(String pass) {
+		if ( password.equals(pass) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	//------------------------------------------------------------------------
 	

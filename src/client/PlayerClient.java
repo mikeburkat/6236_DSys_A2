@@ -48,7 +48,7 @@ public class PlayerClient {
 		String out = server.createPlayerAccount(firstName, lastName, age,
 				userName, password, ipAddress);
 		System.out.println(out + "\n");
-		boolean result = out.equals("Created") ? true : false;
+		boolean result = out.equals("Created");
 		return result;
 
 	}
@@ -62,7 +62,7 @@ public class PlayerClient {
 
 		out = server.playerSignIn(userName, password, ipAddress);
 		System.out.println(out + "\n");
-		boolean result = out.equals("Signed In") ? true : false;
+		boolean result = out.equals("Signed In");
 		return result;
 
 	}
@@ -75,7 +75,7 @@ public class PlayerClient {
 
 		String out = server.playerSignOut(userName, ipAddress);
 		System.out.println(out + "\n");
-		boolean result = out.equals("Signed Out") ? true : false;
+		boolean result = out.equals("Signed Out");
 		return result;
 
 	}
@@ -90,7 +90,8 @@ public class PlayerClient {
 		String out = server.transferAccount(userName, password, ipAddress, newIpAddress);
 		System.out.println(out);
 		
-		return false;
+		boolean result = out.equals("Player was Transfered.");
+		return result;
 	}
 
 	// ------------------------------------------------------------------------

@@ -219,6 +219,12 @@ public class GameServerImpl extends GameServerPOA {
 						+ " not found.");
 				return "Transfer failed, player not found.";
 			}
+			
+			boolean allowed = pd.validatePassword(password);
+			if (!allowed) {
+				log.addToPlayerLog(userName, "Transfer Failed, password authentification failed");
+				return "Transfer Failed, password authentification failed";
+			}
 
 			log.addToPlayerLog(userName, "requested transfer from "
 					+ oldIpAddress + " to " + newIpAddress);
