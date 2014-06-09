@@ -29,6 +29,5 @@ public class InitServers {
 				log.delete();
 			}
 		}
-		
 	}
 }
